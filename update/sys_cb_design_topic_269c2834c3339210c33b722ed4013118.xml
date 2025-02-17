@@ -1,0 +1,1989 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_cb_design_topic">
+    <sys_cb_design_topic action="INSERT_OR_UPDATE">
+        <compiled_topic display_value="Submit a request">5e9ce434c3339210c33b722ed40131ee</compiled_topic>
+        <design_definition>{"type":"FlowTopic","triggers":[{"type":"Trigger","name":"369dc78a6afc487e9ed888bba5b11956","triggerType":"request","applicability":{"type":"Applicability","mode":"script","value":"true"},"id":"369dc78a6afc487e9ed888bba5b11956"}],"goals":[{"name":"primary","trigger_id":"369dc78a6afc487e9ed888bba5b11956","nodes":[{"type":"StartGoal","goal_id":"primary","greeting_msg":{"type":"String","mode":"string","value":""},"id":"182002c5f98a40ddaa3595819443ec3d","name":"Start","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false},{"type":"TerminateGoal","goal_id":"primary","confirmation_msg":{"type":"String","mode":"string","value":""},"id":"37614f50996541419aaf4eac693c030b","name":"End","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false},{"type":"LibraryCall","library_topic_name":"Search Catalog Item","library_topic_id":"ccaacd71c3a3330012d1758a7ff57ecd","library_topic_is_template":false,"parameter-mappings":[{"parameter-name":"catalogs","value":{"type":"String","mode":"script","value":"(function execute() {\n    function getCatalogM2M(portalId) {\n        var gr = new GlideRecord('m2m_sp_portal_catalog');\n        if (gr.isValid()) {\n            gr.addActiveQuery();\n            gr.addQuery('sp_portal', portalId);\n            gr.addQuery('sc_catalog.active', true);\n            gr.orderBy('order');\n            gr.orderBy('sc_catalog.active');\n        }\n        else {\n            gr = new GlideRecord('sp_portal');\n            gr.addQuery('sys_id', portalId);\n        }\n        gr.setWorkflow(false)\n        gr.query();\n        return gr;\n    }\n    var suffix = vaVars.portalName;\n    if (suffix) {\n        var catalogs = \"\";\n        var gr = new GlideRecord('sp_portal');\n        gr.addQuery('url_suffix', suffix);\n        gr.setWorkflow(false)\n        gr.query();\n        gr.next();\n        var portalId = gr.getUniqueValue();\n        vaVars.portalId = portalId;\n        var m2mGR = getCatalogM2M(portalId);\n        if (m2mGR.getRowCount() &gt; 0) {\n            m2mGR.next();\n            catalogs += m2mGR.getValue('sc_catalog');\n            while (m2mGR.next()) {\n                catalogs += ',';\n                catalogs += m2mGR.getValue('sc_catalog')\n\n            }\n        }\n        return catalogs;\n    }\n    return '';\n})()\n"},"metadata":{"type":"String","list":false,"items":[],"use_items":false}},{"parameter-name":"query_term","value":{"type":"String","mode":"script","value":"(function execute() {\n    if (vaVars.search_catalogitem != '' &amp;&amp; !vaVars.search_again)\n        return vaVars.search_catalogitem\n\n    if (vaVars.search_hardware != '')\n        return vaVars.search_hardware\n    else if (vaVars.search_software != '')\n        return vaVars.search_software\n    else if (vaInputs.search != '')\n        return vaInputs.search\n\n})()\n"},"metadata":{"type":"String","list":false,"items":[],"use_items":false}},{"parameter-name":"result_limit","value":{"type":"String","mode":"string","value":"5"},"metadata":{"type":"String","list":false,"items":[],"use_items":false}}],"return-value-mappings":[{"main_topic_variable_namespace":"vaInputs","library_topic_return_parameter_name":"catalog_item_id","main_topic_mapped_variable_name":"catalog_item_id"},{"main_topic_variable_namespace":"vaInputs","library_topic_return_parameter_name":"item_type","main_topic_mapped_variable_name":"item_type"},{"main_topic_variable_namespace":"vaInputs","library_topic_return_parameter_name":"is_conversational","main_topic_mapped_variable_name":"is_conversational"}],"header_card_fields":[],"id":"6b94a7e30472425093bef0cdcaa200a7","name":"Search Catalog Item","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"(function execute() {\n    return vaVars.search_again || !vaVars.catalog_item_id;\n})()\n"},"expert_mode":false},{"type":"Decision","name":"Decision","branches":[{"type":"Branch","label":"Didn't recieve an itemID","expression":{"type":"Applicability","mode":"script","value":"(function execute() {\n    return vaInputs.catalog_item_id == '' || vaVars.catalog_item_id == null;\n})()\n"},"id":"d44a233527df409abb0cd1cb8d8551e3","name":"Didn't recieve an itemID","expert_mode":false},{"type":"Branch","label":"Recieved an ItemID","expression":{"type":"Applicability","mode":"script","value":"(function execute() {\n   \n   return (vaVars.catalog_item_id != null &amp;&amp; vaInputs.catalog_item_id != \"-1\");\n   \n})()\n"},"id":"dda003bafae8435086b848ef34f3cfc9","name":"Recieved an ItemID","expert_mode":false},{"type":"Branch","label":"itemIid is -1","expression":{"type":"Applicability","mode":"script","value":"(function execute() {\n    return vaInputs.catalog_item_id == \"-1\";\n})()\n"},"id":"2e98c0f040e64135948cb4a54a92ef0b","name":"itemIid is -1","expert_mode":false}],"id":"6553791ec42c4b71849c264a82c96673","goal_id":"primary","expert_mode":false},{"type":"TextOutputPrompt","value":[{"type":"String","mode":"string","value":"gs.getMessageLang(\"va:topic:88eb28f0c3339210c33b722ed4013165:node:40e9482b12f1476eb13aa5f9ca0fed53:field:0\", vaContext.getRequesterLang())"}],"request_feedback":true,"id":"40e9482b12f1476eb13aa5f9ca0fed53","name":"Try Again","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false,"secure":false},{"type":"Decision","name":"Decision","branches":[{"type":"Branch","label":"Not Supported","expression":{"type":"Applicability","mode":"script","value":"(function execute() {\n   \n        return (!vaVars.is_conversational || !vaInputs.is_conversational);\n\n})()\n"},"id":"d1349b25c45c4bfb813c100bf6dae44c","name":"Not Supported","expert_mode":false},{"type":"Branch","label":"Is Supported","expression":{"type":"Applicability","mode":"script","value":"(function execute() {\n    return (vaVars.is_conversational || vaInputs.is_conversational);\n})()\n"},"id":"0d32bb61264447d593947c3bd613a346","name":"Is Supported","expert_mode":false}],"id":"895de3f758504dfb9808317581194f36","goal_id":"primary","expert_mode":false},{"type":"LinkOutputPrompt","header":{"type":"String","mode":"string","value":"gs.getMessageLang(\"Use the link below to submit your request:\", vaContext.getRequesterLang())"},"label":{"type":"String","mode":"script","value":"(function execute() {\n    var item = new sn_sc.CatItem(vaInputs.catalog_item_id);\n    if (item) {\n        var catItemJson = item.read({\n            'name' : ''\n        }, false);\n        return catItemJson.name || '';\n    }\n    return '';\n})()\n"},"url":{"type":"String","mode":"script","value":"(function execute() {\n    var item = new sn_sc.CatItem(vaInputs.catalog_item_id);\n\n    if (item &amp;&amp; item.getRecordClass() === \"sc_cat_item_guide\")\n        return vaVars.baseUri + vaVars.portalName + '?id=sc_cat_item_guide&amp;sys_id=' + vaInputs.catalog_item_id + '&amp;referrer=va';\n    \n    return vaVars.baseUri + vaVars.portalName + '?id=sc_cat_item&amp;sys_id=' + vaInputs.catalog_item_id + '&amp;referrer=va';\n})()"},"link_type":"single","multi_link_script":"","id":"60504290e56b4a1892ed4e2cf62553e4","name":"Link Output","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"(function execute() {\n    /* Return true or false to indicate if the topic or topic node can run\n       and be discoverable (or not).  For example:\n\n       var applicability = vaInputs.first_name == 'Bill' ? true : false;\n       return applicability;\n    */\n    return vaInputs.catalog_item_id != '-1';\n})()\n"},"expert_mode":false},{"type":"LibraryCall","library_topic_name":"Request Catalog Item","library_topic_id":"a39acd71c3a3330012d1758a7ff57eb6","library_topic_is_template":false,"parameter-mappings":[{"parameter-name":"catalog_item_id","value":{"type":"String","mode":"script","value":"(function execute() {\n\n    if (vaVars.catalog_item_id == '') {\n        return vaInputs.catalog_item_id.toString()\n    }\n\n    else\n        return vaVars.catalog_item_id.toString();\n\n})()\n"},"metadata":{"type":"String","list":false,"items":[],"use_items":false}},{"parameter-name":"execute_contextual_search","value":{"type":"String","mode":"string","value":"false"},"metadata":{"type":"String","list":false,"items":[],"use_items":false}},{"parameter-name":"confirm_catalog_item","value":{"type":"String","mode":"string","value":"true"},"metadata":{"type":"String","list":false,"items":[],"use_items":false}},{"parameter-name":"show_end_state_card","value":{"type":"String","mode":"string","value":"false"},"metadata":{"type":"True/False","list":false,"items":[],"use_items":false}}],"return-value-mappings":[{"main_topic_variable_namespace":"vaInputs","library_topic_return_parameter_name":"record_id","main_topic_mapped_variable_name":"record_id"},{"main_topic_variable_namespace":"vaInputs","library_topic_return_parameter_name":"record_table","main_topic_mapped_variable_name":"record_table"},{"main_topic_variable_namespace":"vaInputs","library_topic_return_parameter_name":"variables","main_topic_mapped_variable_name":"variables"}],"header_card_fields":[],"id":"5353a1fed5b74ba88ef39fe6bbf41757","name":"Request Catalog Item","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false},{"type":"Decision","name":"Decision","branches":[{"type":"Branch","label":"Catalog Request Not Complete","expression":{"type":"Applicability","mode":"query","value":"record_idEMPTYSTRING"},"id":"0048c1ea346c4cde9ff0594835195d99","name":"Catalog Request Not Complete","expert_mode":false},{"type":"Branch","label":"Item has no VA Support","expression":{"type":"Applicability","mode":"script","value":"(function execute() {\n    return !!vaInputs.record_id.getValue() &amp;&amp; vaInputs.record_id.getValue() == '-1';\n})()\n"},"id":"6360541daa9041a08acb89f42c1be1e4","name":"Item has no VA Support","expert_mode":false},{"type":"Branch","label":"Catalog Request Complete","expression":{"type":"Applicability","mode":"script","value":"(function execute() {\n    return !!vaInputs.record_id.getValue() &amp;&amp; vaInputs.record_id.getValue() != '-1';\n})()\n"},"id":"e3f3d2a2ea1344eb8093b6fa370aa06e","name":"Catalog Request Complete","expert_mode":false}],"id":"2fdc5383344f43e8bd5fa9adff735107","goal_id":"primary","expert_mode":false},{"type":"TextOutputPrompt","value":[{"type":"String","mode":"string","value":"gs.getMessageLang(\"Your request has been submitted. Here are the details:\", vaContext.getRequesterLang())"}],"request_feedback":true,"id":"6868ad3174a14104a566b9e89c6c89eb","name":"Request Complete Message","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false,"secure":false},{"type":"Decision","name":"Decision","branches":[{"type":"Branch","label":"No","expression":{"type":"Applicability","mode":"query","value":"search_again=1"},"id":"6b6ed34931714a9c9b78e93c77ef551f","name":"No","expert_mode":false},{"type":"Branch","label":"Yes","expression":{"type":"Applicability","mode":"query","value":"search_again=0"},"id":"31fa68d2cac647eaa1377bf562b0db21","name":"Yes","expert_mode":false}],"id":"bc21f6eab4254f2ea3d2cbb06b32cb16","goal_id":"primary","expert_mode":false},{"type":"ChoiceInputPrompt","expression_mode":"simple","metadataScript":"","cardName":"","cardFields":[],"id":"b44a430fbf5e4fccac6f806ea9856546","name":"Search Again","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"(function execute() {\n       return !vaVars.query_search;\n})()\n"},"expert_mode":false,"variable_id":"473a93906c694a938be4e70f69ac35a2","message":{"type":"String","mode":"string","value":"gs.getMessageLang(\"Would you like to keep searching?\", vaContext.getRequesterLang())"},"request_feedback":false,"skippable":{"type":"Applicability","mode":"script","value":"false"},"skipreprompt":{"type":"Applicability","mode":"script","value":"false"},"nlu_entity_binding":{"type":"NLUEntityBinding","allow_text_input":true,"use_confirmation_prompt":false},"description":""},{"type":"TextOutputPrompt","value":[{"type":"String","mode":"string","value":"gs.getMessageLang(\"va:topic:88eb28f0c3339210c33b722ed4013165:node:13add439246c498299716fd4335f84df:field:0\", vaContext.getRequesterLang())"}],"request_feedback":true,"id":"13add439246c498299716fd4335f84df","name":"Item not found","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false,"secure":false},{"type":"LibraryCall","library_topic_name":"Deflection","library_topic_id":"7fb4ca055303201033cdddeeff7b12b3","library_topic_is_template":false,"parameter-mappings":[{"parameter-name":"deflection_configuration","value":{"type":"String","mode":"string","value":"5292005253213010000dddeeff7b126c"},"metadata":{"type":"Reference","list":false,"items":[],"use_items":false,"table":"ssa_deflection_configuration"}},{"parameter-name":"deflection_pattern","value":{"type":"String","mode":"string","value":"9ee3409253213010000dddeeff7b123b"},"metadata":{"type":"Reference","list":false,"items":[],"use_items":false,"table":"ssa_deflection_pattern"}},{"parameter-name":"activity_table","value":{"type":"String","mode":"string","value":""},"metadata":{"type":"String","list":false,"items":[],"use_items":false}},{"parameter-name":"activity_ids","value":{"type":"String","mode":"string","value":""},"metadata":{"type":"String","list":false,"items":[],"use_items":false}}],"return-value-mappings":[],"header_card_fields":[],"id":"d8b4c779c5db4ff29b0bafca9205c3d0","name":"No Deflection","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false},{"type":"LibraryCall","library_topic_name":"Deflection","library_topic_id":"7fb4ca055303201033cdddeeff7b12b3","library_topic_is_template":false,"parameter-mappings":[{"parameter-name":"deflection_configuration","value":{"type":"String","mode":"string","value":"5292005253213010000dddeeff7b126c"},"metadata":{"type":"Reference","list":false,"items":[],"use_items":false,"table":"ssa_deflection_configuration"}},{"parameter-name":"deflection_pattern","value":{"type":"String","mode":"string","value":"f063885253213010000dddeeff7b1221"},"metadata":{"type":"Reference","list":false,"items":[],"use_items":false,"table":"ssa_deflection_pattern"}},{"parameter-name":"activity_table","value":{"type":"String","mode":"string","value":"{{vaInputs.record_table}}"},"metadata":{"type":"String","list":false,"items":[],"use_items":false}},{"parameter-name":"activity_ids","value":{"type":"String","mode":"string","value":"{{vaInputs.record_id}}"},"metadata":{"type":"String","list":false,"items":[],"use_items":false}}],"return-value-mappings":[],"header_card_fields":[],"id":"41db700e7d81486eae61ecfe23dd3946","name":"Deflection: Request Complete","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false},{"type":"LibraryCall","library_topic_name":"Deflection","library_topic_id":"7fb4ca055303201033cdddeeff7b12b3","library_topic_is_template":false,"parameter-mappings":[{"parameter-name":"deflection_configuration","value":{"type":"String","mode":"string","value":"5292005253213010000dddeeff7b126c"},"metadata":{"type":"Reference","list":false,"items":[],"use_items":false,"table":"ssa_deflection_configuration"}},{"parameter-name":"deflection_pattern","value":{"type":"String","mode":"string","value":"6eb34c5253213010000dddeeff7b12be"},"metadata":{"type":"Reference","list":false,"items":[],"use_items":false,"table":"ssa_deflection_pattern"}},{"parameter-name":"activity_table","value":{"type":"String","mode":"string","value":""},"metadata":{"type":"String","list":false,"items":[],"use_items":false}},{"parameter-name":"activity_ids","value":{"type":"String","mode":"string","value":""},"metadata":{"type":"String","list":false,"items":[],"use_items":false}}],"return-value-mappings":[],"header_card_fields":[],"id":"fc736bb76e1645e88f7bce5a0ff85042","name":"Deflection: Link Provided","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"(function execute() {\n    /* Return true or false to indicate if the topic or topic node can run\n       and be discoverable (or not).  For example:\n\n       var applicability = vaInputs.first_name == 'Bill' ? true : false;\n       return applicability;\n    */\n    return vaInputs.catalog_item_id != '-1';\n})()\n"},"expert_mode":false},{"type":"ScriptedAction","script":"(function execute() {\n\n    vaVars.search = vaInputs.search.toString();\n    vaVars.search_catalogitem = vaInputs.search_catalogitem;\n    vaVars.search_hardware = vaInputs.search_hardware;\n    vaVars.search_software = vaInputs.search_software;\n\n    if (vaInputs.search != ''){\n        vaVars.direct_search = true;\n        return;\n    }\n        \n\n    if (vaContext.getRequesterLang() == 'en') {\n        var gr = new GlideRecord('sc_cat_item');\n        gr.addActiveQuery();\n        gr.addQuery('name', vaInputs.search_catalogitem);\n        gr.query();\n\n        while (gr.next()) {\n            vaVars.catalog_item_id = gr.getValue('sys_id');\n            vaInputs.catalog_item_id = vaVars.catalog_item_id;\n        }\n        \n    } else {\n\n        var gr = new GlideRecord('sys_translated_text');\n        \n        gr.addQuery('value', vaInputs.search_catalogitem);\n        gr.addQuery('tablename', 'sc_cat_item');\n        gr.addQuery('language', vaContext.getRequesterLang())\n        gr.addQuery('fieldname', 'name')\n        gr.query();\n\n        while (gr.next()) {\n            var gr2 = new GlideRecord('sc_cat_item');\n            gr2.addActiveQuery();\n            gr2.addQuery('sys_id', gr.getValue('documentkey'));\n            gr2.query();\n            if (gr2.next()) {\n                vaVars.catalog_item_id = gr.getValue('documentkey');\n                vaInputs.catalog_item_id = vaVars.catalog_item_id;\n            }\n        }\n    }\n\n    if (vaVars.search_catalogitem != null) {\n        if (vaVars.search_hardware == '' &amp;&amp; vaVars.search_software == '')\n            vaVars.hardware_software_entity_mapped = false;\n\n        else\n            vaVars.hardware_software_entity_mapped = true;\n    }\n})()\n","id":"c26c57a271b64f35814b8114bd7cb3de","name":"Set search term","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false},{"type":"ScriptOutputPrompt","output_type":"single_part","id":"724aedb8442a419cacf27cd8f0ab809c","name":"Submitted Request Record","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false,"value":{"type":"String","mode":"string","value":"(function execute() {\n    \n    var title = '';\n    var subtitle = '';\n    var fields = [];\n\n    var gr = new GlideRecord(vaVars.record_table);\n    gr.addQuery('sys_id',vaVars.record_id);\n    gr.query();\n    title = gr.getClassDisplayValue();\n    if(gr.next()){\n        subtitle = gr.getValue('task_effective_number').toString();\n        if (gr.isValidField('short_description')) {\n            fields.push({\n                \"fieldLabel\": gr.getElement('short_description').getLabel(),\n                \"fieldValue\": gr.getDisplayValue('short_description').toString()\n            });\n        }\n        if (gr.isValidField('state')) {\n            fields.push({\n                \"fieldLabel\": gr.getElement('state').getLabel(),\n                \"fieldValue\": gr.getDisplayValue('state').toString()\n            });\n        }\n    }\n    \n    var card_data = JSON.stringify({\n            \"title\":title,\n            \"subtitle\":subtitle,\n            \"fields\":fields,\n            \"url\":vaVars.recordLink.toString()\n      });\n    return vaSystem.renderCard(\"Card\", card_data); \n})()\n"},"secure":false},{"type":"ScriptedAction","script":"(function execute() {\n    vaVars.catalog_item_id = vaInputs.catalog_item_id;\n    vaVars.is_conversational = new sn_sc.CatalogConversationHelper().hasVASupport(vaVars.catalog_item_id.toString());\n    vaInputs.is_conversational = vaVars.is_conversational;\n})()\n","id":"207bb6c02fd645d28d9f9a5d83c430fc","name":"Check if Item is supported by VA?","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false},{"type":"InputPrompt","variable_id":"b2c92474d01044dfbe1475400b7d7b6f","message":{"type":"String","mode":"string","value":"gs.getMessageLang(\"What are you looking for?\", vaContext.getRequesterLang())"},"nlu_entity_binding":{"type":"NLUEntityBinding","allow_text_input":false,"use_confirmation_prompt":true},"request_feedback":true,"skippable":{"type":"Applicability","mode":"script","value":"false"},"skipreprompt":{"type":"Applicability","mode":"script","value":"false"},"id":"e17d7ae3a14d4797807fa4147d3c5f6e","name":"Search","goal_id":"primary","applicability":{"type":"Applicability","mode":"query","value":"search_catalogitemISEMPTY^search_hardwareISEMPTY^search_softwareISEMPTY^NQvaInputs.search_againISNOTEMPTY"},"expert_mode":false,"formatType":"Text","validationScript":"","description":""},{"type":"InputPrompt","variable_id":"f8c18e23b8374afea7202425492e1965","message":{"type":"String","mode":"string","value":"gs.getMessageLang(\"What are you looking for?\", vaContext.getRequesterLang())"},"nlu_entity_binding":{"type":"NLUEntityBinding","allow_text_input":true,"use_confirmation_prompt":false},"request_feedback":true,"skippable":{"type":"Applicability","mode":"script","value":"false"},"skipreprompt":{"type":"Applicability","mode":"script","value":"false"},"id":"62ac32d6e26a460c81507a458fd7c6b1","name":"Search Software","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"(function execute() {\n    /* Return true or false to indicate if the topic or topic node can run\n       and be discoverable (or not).  For example:\n\n       var applicability = vaInputs.first_name == 'Bill' ? true : false;\n       return applicability;\n    */\n    return false;\n})()\n"},"expert_mode":false,"formatType":"Text","validationScript":"","description":""},{"type":"InputPrompt","variable_id":"9f1a407052804d5f8e60a44b8d1bf6cb","message":{"type":"String","mode":"string","value":"gs.getMessageLang(\"What are you looking for?\", vaContext.getRequesterLang())"},"nlu_entity_binding":{"type":"NLUEntityBinding","allow_text_input":true,"use_confirmation_prompt":false},"request_feedback":true,"skippable":{"type":"Applicability","mode":"script","value":"false"},"skipreprompt":{"type":"Applicability","mode":"script","value":"false"},"id":"24d8bdfab0b443b5be855fc9bdd8f75d","name":"Search Hardware","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"(function execute() {\n    /* Return true or false to indicate if the topic or topic node can run\n       and be discoverable (or not).  For example:\n\n       var applicability = vaInputs.first_name == 'Bill' ? true : false;\n       return applicability;\n    */\n    return false;\n})()\n"},"expert_mode":false,"formatType":"Text","validationScript":"","description":""},{"type":"InputPrompt","variable_id":"9defef30101b4caeaacfd9662a42757f","message":{"type":"String","mode":"string","value":"gs.getMessageLang(\"What are you looking for?\", vaContext.getRequesterLang())"},"nlu_entity_binding":{"type":"NLUEntityBinding","allow_text_input":true,"use_confirmation_prompt":false},"request_feedback":true,"skippable":{"type":"Applicability","mode":"script","value":"false"},"skipreprompt":{"type":"Applicability","mode":"script","value":"false"},"id":"6b079922a0b44249b2e63ca9f64df37c","name":"Search CatalogItem","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"(function execute() {\n    /* Return true or false to indicate if the topic or topic node can run\n       and be discoverable (or not).  For example:\n\n       var applicability = vaInputs.first_name == 'Bill' ? true : false;\n       return applicability;\n    */\n    return false;\n})()\n"},"expert_mode":false,"formatType":"Text","validationScript":"","description":""},{"type":"ScriptedAction","script":"(function execute() {\n  vaVars.search_again = true;\n  vaVars.catalog_item_id = '';\n  vaInputs.catalog_item_id = '';\n})()\n","id":"9b009cea3bef46d690babab0ce49f945","name":"Set variables","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false},{"type":"Decision","name":"Decision","branches":[{"type":"Branch","label":"No","expression":{"type":"Applicability","mode":"script","value":"(function execute() {\n    return !vaVars.hardware_software_entity_searched &amp;&amp; !vaVars.direct_search;\n})()\n"},"id":"e7be8a0cf32d4afd98bf6356a7e134b1","name":"No","expert_mode":false},{"type":"Branch","label":"Yes","expression":{"type":"Applicability","mode":"script","value":"(function execute() {\n    \n    return vaVars.direct_search || vaVars.hardware_software_entity_searched;\n})()\n"},"id":"49ebf155090a48d08fc67b351a0444de","name":"Yes","expert_mode":false}],"id":"dbc594039e9349eab0f0a2a612d7d938","goal_id":"primary","expert_mode":false},{"type":"ScriptedAction","script":"(function execute() {\n    vaVars.hardware_software_entity_searched = true;\n})()\n","id":"794eb3c742e240f39017587764aacbf1","name":"Hardware/Software Search","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false},{"type":"ScriptedAction","script":"(function execute() {\n    vaInputs.search_catalogitem = '';\n    vaInputs.search_hardware = '';\n    vaInputs.search_software = '';\n    vaVars.search_catalogitem = '';\n    vaVars.search_hardware = '';\n    vaVars.search_software = '';\n    vaInputs.catalog_item_id = '';\n    vaVars.catalog_item_id = '';\n    vaVars.query_search = true;\n})()\n","id":"dc253ed4bc8b48eeb95aa103ee11c498","name":"Set variables","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false},{"type":"Decision","name":"Query search?","branches":[{"type":"Branch","label":"No","expression":{"type":"Applicability","mode":"script","value":"(function execute() {\n    /* Return true or false to indicate the branch condition's applicability.\n       For example:\n\n       var applies = vaInputs.first_name == 'Bill' ? true : false;\n       return applies;\n    */\n    return !vaVars.query_search;\n})()\n"},"id":"68575e79a399461e9441d3878d87b20f","name":"No","expert_mode":false},{"type":"Branch","label":"Yes","expression":{"type":"Applicability","mode":"script","value":"(function execute() {\n    /* Return true or false to indicate the branch condition's applicability.\n       For example:\n\n       var applies = vaInputs.first_name == 'Bill' ? true : false;\n       return applies;\n    */\n    return vaVars.query_search;\n})()\n"},"id":"2ea411bbd488451f9ed81e8992dc9bb3","name":"Yes","expert_mode":false}],"id":"4ee26ddce82447748774f32bf5a72092","goal_id":"primary","expert_mode":false},{"type":"ScriptedAction","script":"(function execute() {\n    \n    var catItemObj = new sn_sc.CatItem(vaVars.catalog_item_id);\n    var catItemJson = catItemObj.getItemSummary(false, 'basic');\n    vaVars.image = catItemJson.picture;\n    vaVars.item_title = catItemJson.name;\n\n    var itemJSON = new sn_sc.CatalogConversationHelper().getItem(vaVars.catalog_item_id);\n    vaVars.itemJSON = JSON.stringify(itemJSON);\n})()\n","id":"bf615bf99e2b45f7bff3d00382308db9","name":"Get Catalog item details","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"(function execute() {\n    /* Return true or false to indicate if the topic or topic node can run\n       and be discoverable (or not).  For example:\n\n       var applicability = vaInputs.first_name == 'Bill' ? true : false;\n       return applicability;\n    */\n    return vaVars.catalog_item_id != '' || vaInputs.catalog_item_id != '';\n})()\n"},"expert_mode":false},{"type":"TextOutputPrompt","value":[{"type":"String","mode":"script","value":"(function execute() {\n    var itemJson = JSON.parse(vaVars.itemJSON);\n    if (!gs.nil(itemJson.description))\n        return gs.getMessage(\"Here are some more details about {0}{1}\", [vaVars.item_title, itemJson.description]);\n})()\n"}],"request_feedback":true,"id":"5561879441d24e39a98fe8c041aa755b","name":"Description","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"(function execute() {\n    return vaInputs.catalog_item_id  != '-1';\n})()\n"},"expert_mode":false,"secure":false},{"type":"TextOutputPrompt","value":[{"type":"String","mode":"script","value":"(function execute() {\n    if (vaVars.query_search)\n        return gs.getMessage(\"I'm sorry, I wasn't able to find anything that matches this request, but your questions are helping me learn.\");\n    else\n        return gs.getMessage(\"I'm sorry, I wasn't able to find anything that matches this request.\");\n})()\n"}],"request_feedback":true,"id":"66dabbe5198441f981e4e1f54c11ff00","name":"Not found","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false,"secure":false},{"type":"ImageOutputPrompt","url":{"type":"String","mode":"script","value":"(function execute() {\n    /* Return a quoted string.  For example:\n\n       if (vaInputs.first_name == 'Bill') {\n           return gs.getMessageLang(\"hi there {0}\", vaContext.getRequesterLang(), [vaInputs.first_name]);\n       } else {\n           return gs.getMessageLang(\"how are you {0}\", vaContext.getRequesterLang(), [vaInputs.last_name]);\n       }\n    */\n    return vaVars.baseUri + vaVars.image;\n})()\n"},"alt_text":{"type":"String","mode":"string","value":""},"id":"ec3a0404411a466cbe61cf9168ba87dd","name":"Image","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"(function execute() {\n\n    return vaVars.catalog_item_id != '' &amp;&amp; vaInputs.search == '' &amp;&amp; vaVars.image_not_shown;\n    \n})()\n"},"expert_mode":false},{"type":"ScriptedAction","script":"(function execute() {\n    if(vaInputs.catalog_item_id == null &amp;&amp; vaVars.catalog_item_id != null)\n      vaInputs.catalog_item_id = vaVars.catalog_item_id;\n    else if(vaVars.catalog_item_id == null &amp;&amp; vaInputs.catalog_item_id != null)\n     vaVars.catalog_item_id = vaInputs.catalog_item_id;\n})()\n","id":"9bcdc720908a4a038c3596837aa3168f","name":"Set catalog item variables","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false},{"type":"Decision","name":"Decision","branches":[{"type":"Branch","label":"Yes","expression":{"type":"Applicability","mode":"script","value":"(function execute() {\n    /* Return true or false to indicate the branch condition's applicability.\n       For example:\n\n       var applies = vaInputs.first_name == 'Bill' ? true : false;\n       return applies;\n    */\n    return vaVars.hardware_software_entity_mapped;\n})()\n"},"id":"8bac857a6bb44a8f843966eb391d327a","name":"Yes","expert_mode":false},{"type":"Branch","label":"No","expression":{"type":"Applicability","mode":"script","value":"(function execute() {\n    /* Return true or false to indicate the branch condition's applicability.\n       For example:\n\n       var applies = vaInputs.first_name == 'Bill' ? true : false;\n       return applies;\n    */\n    return !vaVars.hardware_software_entity_mapped;\n})()\n"},"id":"200e572a03d242069633bf18f274f272","name":"No","expert_mode":false}],"id":"e314b8b006df471b9c6897b51e7a1228","goal_id":"primary","expert_mode":false},{"type":"ScriptedAction","script":"(function execute() {\n    var tableName = vaInputs.record_table.toString();\n    var recordId = vaInputs.record_id.toString();\n\n    vaVars.record_table = tableName;\n    vaVars.record_id = recordId;\n\n    var gr = new GlideRecord(tableName);\n    gr.addQuery('sys_id', recordId);\n    gr.query();\n\n    if (gr.next()) {\n        vaVars.isTaskBasedTable = !!(gr.parent != null &amp;&amp; gr.parent.getTableName() == 'task')\n    }\n\n\n    var pageId = 'form';\n    if (vaVars.isTaskBasedTable)\n        pageId = 'ticket';\n\n    var link = '';\n    var screenId = '';\n    if (vaVars.portalName === 'mesp') {\n        var mobileDLink = new global.MobileDeepLinkGenerator('request');\n        if (tableName == 'sc_req_item')\n            screenId = '7516f9d787232300e0ef0cf888cb0b4d';\n        else if (tableName == 'sc_request')\n            screenId = '276dd3edb79033001befcd58de11a9c7';\n        else if (tableName == 'incident')\n            screenId = 'ebb94d9c0f2033001befa68ca8767e4e';\n        else\n            screenId = 'd39eb2db87772300e0ef0cf888cb0bcb';\n\n        link = mobileDLink.getFormScreenLink(screenId, tableName, recordId);\n    } else\n        link = vaVars.baseUri + vaVars.portalName + \"?id=\" + pageId + \"&amp;table=\" + tableName + \"&amp;sys_id=\" + recordId;\n\n    vaVars.recordLink = link;\n})()\n","id":"2a0d81990d6a41bc8ec61465e5ca1219","name":"Process end state details","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false},{"type":"Decision","name":"Decision","branches":[{"type":"Branch","label":"Task based table","expression":{"type":"Applicability","mode":"script","value":"(function execute() {\n    return vaVars.isTaskBasedTable;\n})()\n"},"id":"bf4f4b8d8adb417698f0ab76980dd74a","name":"Task based table","expert_mode":false},{"type":"Branch","label":"Non-Task based table","expression":{"type":"Applicability","mode":"script","value":"(function execute() {\n    return !vaVars.isTaskBasedTable;\n})()\n"},"id":"b7f5b3847ff44568b1b8c6db8a1e8d45","name":"Non-Task based table","expert_mode":false}],"id":"5bf9cba1da9d4a6b9cb285f3c319ebe5","goal_id":"primary","expert_mode":false},{"type":"LinkOutputPrompt","header":{"type":"String","mode":"string","value":"gs.getMessageLang(\"Your request has been submitted\", vaContext.getRequesterLang())"},"label":{"type":"String","mode":"string","value":"gs.getMessageLang(\"Click here to view the created record\", vaContext.getRequesterLang())"},"url":{"type":"String","mode":"string","value":"{{vaVars.recordLink}}"},"link_type":"single","multi_link_script":"","id":"93b634cdd365467c9d7a56921a9b8761","name":"Submitted record link","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false},{"type":"ImageOutputPrompt","url":{"type":"String","mode":"script","value":"(function execute() {\n    return vaVars.baseUri + vaVars.image.toString();\n})()\n"},"alt_text":{"type":"String","mode":"string","value":""},"id":"a987af2f317c4cd886474b2448732e85","name":"Image","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"(function execute() {\n    return vaInputs.search == '' &amp;&amp; vaVars.catalog_item_id != '' &amp;&amp; vaVars.image_not_shown;\n})()\n"},"expert_mode":false},{"type":"ScriptedAction","script":"(function execute() {\n    vaVars.image_not_shown=false;\n})()\n","id":"4d4e9b681d444580a8db512c473c750d","name":"Set variables","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"(function execute() {\n\n    return vaVars.catalog_item_id != '' &amp;&amp; vaInputs.search == '';\n    \n})()\n"},"expert_mode":false},{"type":"ScriptedAction","script":"(function execute() {\n    vaVars.image_not_shown=false;\n})()\n","id":"46416fed16294f9fb16138480354e507","name":"Set variables","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"(function execute() {\n    return vaInputs.search == '' &amp;&amp; vaVars.catalog_item_id != '';\n})()\n"},"expert_mode":false}],"edges":[{"type":"Edge","source_node_id":"dbc594039e9349eab0f0a2a612d7d938","target_node_id":"e314b8b006df471b9c6897b51e7a1228","branch_id":"e7be8a0cf32d4afd98bf6356a7e134b1","id":"46debc7f575c4fd0881c79ae59a9cbf7","name":"e7be8a0cf32d4afd98bf6356a7e134b1"},{"type":"Edge","source_node_id":"dbc594039e9349eab0f0a2a612d7d938","target_node_id":"dc253ed4bc8b48eeb95aa103ee11c498","branch_id":"49ebf155090a48d08fc67b351a0444de","id":"0070117935564463814fff051d30a679","name":"49ebf155090a48d08fc67b351a0444de"},{"type":"Edge","source_node_id":"9bcdc720908a4a038c3596837aa3168f","target_node_id":"6553791ec42c4b71849c264a82c96673","id":"e5d2b2b7b0ed4297b403f101b09a5a35"},{"type":"Edge","source_node_id":"6553791ec42c4b71849c264a82c96673","target_node_id":"13add439246c498299716fd4335f84df","branch_id":"d44a233527df409abb0cd1cb8d8551e3","id":"68ae31e306664460828b870c40420f66","name":"d44a233527df409abb0cd1cb8d8551e3"},{"type":"Edge","source_node_id":"6553791ec42c4b71849c264a82c96673","target_node_id":"207bb6c02fd645d28d9f9a5d83c430fc","branch_id":"dda003bafae8435086b848ef34f3cfc9","id":"ad6e8d7af1934005a6da5c39877f3753","name":"dda003bafae8435086b848ef34f3cfc9"},{"type":"Edge","source_node_id":"e17d7ae3a14d4797807fa4147d3c5f6e","target_node_id":"c26c57a271b64f35814b8114bd7cb3de","id":"d8eff41426714368ac7896fe57c5ed10"},{"type":"Edge","source_node_id":"895de3f758504dfb9808317581194f36","target_node_id":"ec3a0404411a466cbe61cf9168ba87dd","branch_id":"d1349b25c45c4bfb813c100bf6dae44c","id":"98f6b8864f50447e814f670d365e7f00","name":"d1349b25c45c4bfb813c100bf6dae44c"},{"type":"Edge","source_node_id":"207bb6c02fd645d28d9f9a5d83c430fc","target_node_id":"bf615bf99e2b45f7bff3d00382308db9","id":"a385b92ec2f24aa2b47c3439162f0949"},{"type":"Edge","source_node_id":"bf615bf99e2b45f7bff3d00382308db9","target_node_id":"895de3f758504dfb9808317581194f36","id":"9424a86873fc448b8302a5c5d43dd8a2"},{"type":"Edge","source_node_id":"6553791ec42c4b71849c264a82c96673","target_node_id":"66dabbe5198441f981e4e1f54c11ff00","branch_id":"2e98c0f040e64135948cb4a54a92ef0b","id":"62bf3505ecf746ae9d5a632ee4cd7faa","name":"2e98c0f040e64135948cb4a54a92ef0b"},{"type":"Edge","source_node_id":"d8b4c779c5db4ff29b0bafca9205c3d0","target_node_id":"37614f50996541419aaf4eac693c030b","id":"b1fad4cc34d9435cbfe0c81ed86bd4d2"},{"type":"Edge","source_node_id":"dc253ed4bc8b48eeb95aa103ee11c498","target_node_id":"e17d7ae3a14d4797807fa4147d3c5f6e","id":"90cf256a3b7b447bb0b90d77a693bf77"},{"type":"Edge","source_node_id":"794eb3c742e240f39017587764aacbf1","target_node_id":"6b94a7e30472425093bef0cdcaa200a7","id":"19455028ee664cd78f6ea9c835345cec"},{"type":"Edge","source_node_id":"5353a1fed5b74ba88ef39fe6bbf41757","target_node_id":"2fdc5383344f43e8bd5fa9adff735107","id":"acdd8fa18d214a8f88cd58eab34cc3d5"},{"type":"Edge","source_node_id":"fc736bb76e1645e88f7bce5a0ff85042","target_node_id":"b44a430fbf5e4fccac6f806ea9856546","id":"c7f83d25f26e40f0aa4f413bb4d96982"},{"type":"Edge","source_node_id":"62ac32d6e26a460c81507a458fd7c6b1","target_node_id":"e17d7ae3a14d4797807fa4147d3c5f6e","id":"dc8f52d2fa9f40168cab3e018e13d680"},{"type":"Edge","source_node_id":"24d8bdfab0b443b5be855fc9bdd8f75d","target_node_id":"62ac32d6e26a460c81507a458fd7c6b1","id":"ff727488ef504d409ae9b47f1b97f5f7"},{"type":"Edge","source_node_id":"c26c57a271b64f35814b8114bd7cb3de","target_node_id":"6b94a7e30472425093bef0cdcaa200a7","id":"8e33e68efc8147b18b67c8d4eca8ee42"},{"type":"Edge","source_node_id":"2fdc5383344f43e8bd5fa9adff735107","target_node_id":"b44a430fbf5e4fccac6f806ea9856546","branch_id":"0048c1ea346c4cde9ff0594835195d99","id":"a49b338cc45447d9a946053cfe432e5c","name":"0048c1ea346c4cde9ff0594835195d99"},{"type":"Edge","source_node_id":"724aedb8442a419cacf27cd8f0ab809c","target_node_id":"41db700e7d81486eae61ecfe23dd3946","id":"312a05905ffa4cc3baead7a937673eab"},{"type":"Edge","source_node_id":"2fdc5383344f43e8bd5fa9adff735107","target_node_id":"60504290e56b4a1892ed4e2cf62553e4","branch_id":"6360541daa9041a08acb89f42c1be1e4","id":"1c4b6fb4645745779adce711ce9a2158","name":"6360541daa9041a08acb89f42c1be1e4"},{"type":"Edge","source_node_id":"b44a430fbf5e4fccac6f806ea9856546","target_node_id":"bc21f6eab4254f2ea3d2cbb06b32cb16","id":"479530c4a5e84a1d9eec093249f4a3cd"},{"type":"Edge","source_node_id":"13add439246c498299716fd4335f84df","target_node_id":"b44a430fbf5e4fccac6f806ea9856546","id":"d59b703c0087436a930e950a5c7507d5"},{"type":"Edge","source_node_id":"bc21f6eab4254f2ea3d2cbb06b32cb16","target_node_id":"d8b4c779c5db4ff29b0bafca9205c3d0","branch_id":"6b6ed34931714a9c9b78e93c77ef551f","id":"dee1e53bee914fd6836fdbf20eb65e56","name":"6b6ed34931714a9c9b78e93c77ef551f"},{"type":"Edge","source_node_id":"41db700e7d81486eae61ecfe23dd3946","target_node_id":"37614f50996541419aaf4eac693c030b","id":"8bfc7544c6f44c7f9a585acf2868dee6"},{"type":"Edge","source_node_id":"60504290e56b4a1892ed4e2cf62553e4","target_node_id":"fc736bb76e1645e88f7bce5a0ff85042","id":"798fe8f634f74340b4a05c5f13319256"},{"type":"Edge","source_node_id":"6868ad3174a14104a566b9e89c6c89eb","target_node_id":"724aedb8442a419cacf27cd8f0ab809c","id":"a82eb47adf614262844c5670ff74c38e"},{"type":"Edge","source_node_id":"182002c5f98a40ddaa3595819443ec3d","target_node_id":"6b079922a0b44249b2e63ca9f64df37c","id":"5f8b0db04ab3498e9f834558af081a56"},{"type":"Edge","source_node_id":"6b079922a0b44249b2e63ca9f64df37c","target_node_id":"24d8bdfab0b443b5be855fc9bdd8f75d","id":"0d5ce2efdc0d4053b04ad1487e522cb2"},{"type":"Edge","source_node_id":"40e9482b12f1476eb13aa5f9ca0fed53","target_node_id":"9b009cea3bef46d690babab0ce49f945","id":"8efc24805e194857aec9b3b211359f4b"},{"type":"Edge","source_node_id":"9b009cea3bef46d690babab0ce49f945","target_node_id":"dbc594039e9349eab0f0a2a612d7d938","id":"f1664f23e352458baab0c2de81c99dc0"},{"type":"Edge","source_node_id":"bc21f6eab4254f2ea3d2cbb06b32cb16","target_node_id":"4ee26ddce82447748774f32bf5a72092","branch_id":"31fa68d2cac647eaa1377bf562b0db21","id":"0c18c94dadd74e4c9e98a074badbb23d","name":"31fa68d2cac647eaa1377bf562b0db21"},{"type":"Edge","source_node_id":"4ee26ddce82447748774f32bf5a72092","target_node_id":"40e9482b12f1476eb13aa5f9ca0fed53","branch_id":"68575e79a399461e9441d3878d87b20f","id":"fef1b3458b56404d9278e8d368891cdd","name":"68575e79a399461e9441d3878d87b20f"},{"type":"Edge","source_node_id":"4ee26ddce82447748774f32bf5a72092","target_node_id":"d8b4c779c5db4ff29b0bafca9205c3d0","branch_id":"2ea411bbd488451f9ed81e8992dc9bb3","id":"22cf17bafb4f4b85a336a15ba0f8b8e9","name":"2ea411bbd488451f9ed81e8992dc9bb3"},{"type":"Edge","source_node_id":"5561879441d24e39a98fe8c041aa755b","target_node_id":"60504290e56b4a1892ed4e2cf62553e4","id":"32cf27aa97104fc68e06c8dd73bbd9d9"},{"type":"Edge","source_node_id":"66dabbe5198441f981e4e1f54c11ff00","target_node_id":"b44a430fbf5e4fccac6f806ea9856546","id":"cd763a4940104195a1779e5c5239d287"},{"type":"Edge","source_node_id":"6b94a7e30472425093bef0cdcaa200a7","target_node_id":"9bcdc720908a4a038c3596837aa3168f","id":"12cbe57c019040d99ffd8f985c8d5abe"},{"type":"Edge","source_node_id":"e314b8b006df471b9c6897b51e7a1228","target_node_id":"794eb3c742e240f39017587764aacbf1","branch_id":"8bac857a6bb44a8f843966eb391d327a","id":"a7380168c98b4ad48f71f6dda185fcfe","name":"8bac857a6bb44a8f843966eb391d327a"},{"type":"Edge","source_node_id":"e314b8b006df471b9c6897b51e7a1228","target_node_id":"dc253ed4bc8b48eeb95aa103ee11c498","branch_id":"200e572a03d242069633bf18f274f272","id":"5986f7be945c4a98b5e00cf525e57a4c","name":"200e572a03d242069633bf18f274f272"},{"type":"Edge","source_node_id":"2fdc5383344f43e8bd5fa9adff735107","target_node_id":"2a0d81990d6a41bc8ec61465e5ca1219","branch_id":"e3f3d2a2ea1344eb8093b6fa370aa06e","id":"47c6428356164fa0b28042e323c174bb","name":"e3f3d2a2ea1344eb8093b6fa370aa06e"},{"type":"Edge","source_node_id":"2a0d81990d6a41bc8ec61465e5ca1219","target_node_id":"5bf9cba1da9d4a6b9cb285f3c319ebe5","id":"4f2b67af358b48bb95fbf42f7d100482"},{"type":"Edge","source_node_id":"5bf9cba1da9d4a6b9cb285f3c319ebe5","target_node_id":"6868ad3174a14104a566b9e89c6c89eb","branch_id":"bf4f4b8d8adb417698f0ab76980dd74a","id":"80dd67dae5464391965bf5c9d035e5be","name":"bf4f4b8d8adb417698f0ab76980dd74a"},{"type":"Edge","source_node_id":"5bf9cba1da9d4a6b9cb285f3c319ebe5","target_node_id":"93b634cdd365467c9d7a56921a9b8761","branch_id":"b7f5b3847ff44568b1b8c6db8a1e8d45","id":"0cb0d74b806540539b502de0e9ed0262","name":"b7f5b3847ff44568b1b8c6db8a1e8d45"},{"type":"Edge","source_node_id":"93b634cdd365467c9d7a56921a9b8761","target_node_id":"41db700e7d81486eae61ecfe23dd3946","id":"1868518dc0c840e2b91e7417fc87c57d"},{"type":"Edge","source_node_id":"895de3f758504dfb9808317581194f36","target_node_id":"a987af2f317c4cd886474b2448732e85","branch_id":"0d32bb61264447d593947c3bd613a346","id":"9b366c6b0a014d6c83b30ca14cd50625","name":"0d32bb61264447d593947c3bd613a346"},{"type":"Edge","source_node_id":"ec3a0404411a466cbe61cf9168ba87dd","target_node_id":"4d4e9b681d444580a8db512c473c750d","id":"89dcefa1bdb44d7b91d4a749ed0995e2"},{"type":"Edge","source_node_id":"4d4e9b681d444580a8db512c473c750d","target_node_id":"5561879441d24e39a98fe8c041aa755b","id":"ed2599bccbd846ceb7751cc5144990f5"},{"type":"Edge","source_node_id":"a987af2f317c4cd886474b2448732e85","target_node_id":"46416fed16294f9fb16138480354e507","id":"758eef3d1bc04bf09d7375ef81247263"},{"type":"Edge","source_node_id":"46416fed16294f9fb16138480354e507","target_node_id":"5353a1fed5b74ba88ef39fe6bbf41757","id":"2e7ddebedd634fbdabc78fa5d4eb1282"}],"id":"primary"}],"script_variables":[{"type":"String","name":"LiveAgent_application","value":{"type":"String","mode":"string","value":"itsm"},"list":false,"id":"5b3f0e1e274c4084b2cd6a75af9bd7b0","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"baseUri","value":{"type":"String","mode":"script","value":"(function execute() {\n    return gs.getProperty('glide.servlet.uri');\n})()\n"},"list":false,"id":"8c338a44219e4596967d841b6472dc25","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"portalName","value":{"type":"String","mode":"script","value":"(function execute() {\n    if (vaContext.deviceType == 'ios' || vaContext.deviceType == 'android')\n        return 'mesp';\n\n    return gs.getProperty('sn_itsm_va.com.snc.itsm.virtualagent.portal_url');\n})()\n"},"list":false,"id":"ae789b21274646e09efbf71477de8ab0","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"catalog_item_id","value":{"type":"String","mode":"string"},"list":false,"id":"e601b9ad308943b2850851ade6a6b9cc","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"is_conversational","value":{"type":"String","mode":"string"},"list":false,"id":"c0663d3e761146bca4f7636e05673aac","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"search_catalogitem","value":{"type":"String","mode":"string"},"list":false,"id":"d9bdaf2ab6d241429112516825a4cee3","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"search_hardware","value":{"type":"String","mode":"string"},"list":false,"id":"de74324ed59046cc8081da44b27ea3b0","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"search_software","value":{"type":"String","mode":"string"},"list":false,"id":"5bd62121b81f4c2f9f987782be6be7d4","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"search_again","value":{"type":"String","mode":"string","value":"false"},"list":false,"id":"722c9c95a9f345db8ff50c4451126989","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"hardware_software_entity_searched","value":{"type":"String","mode":"string","value":"false"},"list":false,"id":"664030310b334fe58b672d3b6c0303a5","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"query_search","value":{"type":"String","mode":"string","value":"false"},"list":false,"id":"d1d301266864440699cd6b32cf445234","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"image","value":{"type":"String","mode":"string"},"list":false,"id":"26370068bd894d05bc2ed718e58aa317","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"item_title","value":{"type":"String","mode":"string"},"list":false,"id":"d4e0b573b771422aaec3c98f1a61c268","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"itemJSON","value":{"type":"String","mode":"string"},"list":false,"id":"d05e6b9b67a64da1accccacf938dddd5","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"search","value":{"type":"String","mode":"string"},"list":false,"id":"d95c8ec1e8634c43ba5f989ad2d60889","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"direct_search","value":{"type":"String","mode":"string","value":"false"},"list":false,"id":"0f87a63266d54ea2b76531aacf3a2644","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"hardware_software_entity_mapped","value":{"type":"String","mode":"string","value":"false"},"list":false,"id":"efc5bf10e37e4e08b708560e140d4dbd","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"record_table","value":{"type":"String","mode":"string"},"list":false,"id":"17a954a065d847a59fbf7ca547fd5a8e","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"record_id","value":{"type":"String","mode":"string"},"list":false,"id":"cf9485b054634fe98240088b66fef3d3","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"recordLink","value":{"type":"String","mode":"string"},"list":false,"id":"c534f922fd9b451c933d63e4b7c6aec2","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"isTaskBasedTable","value":{"type":"String","mode":"string"},"list":false,"id":"cf445b5c755e4ed1937342dbcf7a6c9d","formatType":"text","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"image_not_shown","value":{"type":"String","mode":"string","value":"true"},"list":false,"id":"9312c09ea9134e3e8495ce2ee7ea86a1","formatType":"text","secure":false,"sensitive":false,"aiInput":false}],"glide_variables":[{"type":"String","name":"search_catalogitem","list":false,"id":"9defef30101b4caeaacfd9662a42757f","formatType":"Text","validationScript":"","secure":false,"sensitive":false,"aiInput":false},{"type":"Reference","table":"sys_user","auto_select":false,"id":"cc46889500554982a1ec3ab8b1b81a92","name":"user","formatType":"text","secure":false,"sensitive":false,"aiInput":false,"list":false},{"type":"Choice","choices":[{"name":"Yes","element":"0"},{"name":"No","element":"1"}],"id":"473a93906c694a938be4e70f69ac35a2","name":"search_again","formatType":"text","secure":false,"sensitive":false,"aiInput":false,"list":false,"label":"Search Again"},{"type":"String","name":"search_hardware","list":false,"id":"9f1a407052804d5f8e60a44b8d1bf6cb","formatType":"Text","validationScript":"","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"search_software","list":false,"id":"f8c18e23b8374afea7202425492e1965","formatType":"Text","validationScript":"","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"search","list":false,"id":"b2c92474d01044dfbe1475400b7d7b6f","formatType":"Text","validationScript":"","secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"catalog_item_id","list":false,"id":"022b60c7cd8d4c5ba2b604d5924b632a","formatType":"text","metadata":{"libraryMappingType":"output"},"secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"item_type","list":false,"id":"d7de33f969b74babb9262b629829e566","formatType":"text","metadata":{"libraryMappingType":"output"},"secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"is_conversational","list":false,"id":"8564c4a36a9d4ac793540dc3d549e10e","formatType":"text","metadata":{"libraryMappingType":"output"},"secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"record_id","list":false,"id":"9b3d9b2c65594d4995eb857ac0b86696","formatType":"text","metadata":{"libraryMappingType":"output"},"secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"record_table","list":false,"id":"dc62fc7b09f64a4281a24a539cffea46","formatType":"text","metadata":{"libraryMappingType":"output"},"secure":false,"sensitive":false,"aiInput":false},{"type":"String","name":"variables","list":false,"id":"f1e67d9a46ee4e50b654281cd6dfe335","formatType":"text","metadata":{"libraryMappingType":"output"},"secure":false,"sensitive":false,"aiInput":false}],"applicability":{"type":"Applicability","mode":"script","value":"true"},"roles":[],"scope":"6ead8e780f603200cd674f8ce1050ed1","domain":"global","topic_type":"STANDARD","channels":[],"dialog_acts_enabled":false,"id":"88eb28f0c3339210c33b722ed4013165","name":"Submit a request","key_phrases":["Submit a request","Submit a request (Deprecated)","Submit a request","request","buy","item","catalog","purchase","order","computer","phone","need","require","order software","install software","request software"],"nlu_provider":"","nlu_model":"","nlu_model_label":"","nlu_intent":"","nlu_intent_label":"","flexible_conversation_switching":false,"autopilot_topic":false,"design_categories":[{"name":null,"visible":false,"sysId":"3efd22da0b203300a1b16c2367673a10"}],"triggerable_by_notification":false,"description":"ITSM conversation for searching and submitting catalog items","model_type":"nlu_keyword","foundational":false,"modify_confirmation_enabled":false,"context_profiles":[],"title":"Submit a request","library":false,"readOnly":false,"nluMapping":"[]"}</design_definition>
+        <design_topic_id>88eb28f0c3339210c33b722ed4013165</design_topic_id>
+        <graph>{
+  "graph_api_version": "1.0.74",
+  "goals": {
+    "primary": {
+      "id": "primary",
+      "trigger": {
+        "type": "primary"
+      },
+      "name": "primary",
+      "applicability": "",
+      "description": "",
+      "nodes": {
+        "182002c5f98a40ddaa3595819443ec3d": {
+          "id": "182002c5f98a40ddaa3595819443ec3d",
+          "stepType": "Start",
+          "name": "Start",
+          "greetingResponse": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": {
+            "mode": "query",
+            "value": ""
+          }
+        },
+        "37614f50996541419aaf4eac693c030b": {
+          "id": "37614f50996541419aaf4eac693c030b",
+          "stepType": "TerminateGoal",
+          "name": "End",
+          "confirmationMessage": {
+            "mode": "simple",
+            "value": ""
+          },
+          "applicability": {
+            "mode": "query",
+            "value": ""
+          }
+        },
+        "6b94a7e30472425093bef0cdcaa200a7": {
+          "id": "6b94a7e30472425093bef0cdcaa200a7",
+          "stepType": "ReusableTopic",
+          "name": "Search Catalog Item",
+          "fields": [],
+          "reusableTopicChoice": "Search Catalog Item",
+          "reusableTopicId": "ccaacd71c3a3330012d1758a7ff57ecd",
+          "inputs": {
+            "catalogs": {
+              "value": "(function execute() {\n    function getCatalogM2M(portalId) {\n        var gr = new GlideRecord('m2m_sp_portal_catalog');\n        if (gr.isValid()) {\n            gr.addActiveQuery();\n            gr.addQuery('sp_portal', portalId);\n            gr.addQuery('sc_catalog.active', true);\n            gr.orderBy('order');\n            gr.orderBy('sc_catalog.active');\n        }\n        else {\n            gr = new GlideRecord('sp_portal');\n            gr.addQuery('sys_id', portalId);\n        }\n        gr.setWorkflow(false)\n        gr.query();\n        return gr;\n    }\n    var suffix = vaVars.portalName;\n    if (suffix) {\n        var catalogs = \"\";\n        var gr = new GlideRecord('sp_portal');\n        gr.addQuery('url_suffix', suffix);\n        gr.setWorkflow(false)\n        gr.query();\n        gr.next();\n        var portalId = gr.getUniqueValue();\n        vaVars.portalId = portalId;\n        var m2mGR = getCatalogM2M(portalId);\n        if (m2mGR.getRowCount() &gt; 0) {\n            m2mGR.next();\n            catalogs += m2mGR.getValue('sc_catalog');\n            while (m2mGR.next()) {\n                catalogs += ',';\n                catalogs += m2mGR.getValue('sc_catalog')\n\n            }\n        }\n        return catalogs;\n    }\n    return '';\n})()\n",
+              "mode": "script",
+              "type": "String"
+            },
+            "query_term": {
+              "value": "(function execute() {\n    if (vaVars.search_catalogitem != '' &amp;&amp; !vaVars.search_again)\n        return vaVars.search_catalogitem\n\n    if (vaVars.search_hardware != '')\n        return vaVars.search_hardware\n    else if (vaVars.search_software != '')\n        return vaVars.search_software\n    else if (vaInputs.search != '')\n        return vaInputs.search\n\n})()\n",
+              "mode": "script",
+              "type": "String"
+            },
+            "result_limit": {
+              "value": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "text": ""
+                    },
+                    {
+                      "text": "5"
+                    },
+                    {
+                      "text": ""
+                    }
+                  ]
+                }
+              ],
+              "mode": "simple",
+              "type": "String"
+            }
+          },
+          "outputs": [
+            {
+              "id": "022b60c7cd8d4c5ba2b604d5924b632a",
+              "value": "catalog_item_id",
+              "mapping": "catalog_item_id",
+              "preventDisable": true
+            },
+            {
+              "id": "d7de33f969b74babb9262b629829e566",
+              "value": "item_type",
+              "mapping": "item_type",
+              "preventDisable": false
+            },
+            {
+              "id": "8564c4a36a9d4ac793540dc3d549e10e",
+              "value": "is_conversational",
+              "mapping": "is_conversational",
+              "preventDisable": true
+            }
+          ],
+          "variableIds": [
+            "022b60c7cd8d4c5ba2b604d5924b632a",
+            "d7de33f969b74babb9262b629829e566",
+            "8564c4a36a9d4ac793540dc3d549e10e"
+          ],
+          "outdatedNote": false,
+          "applicability": {
+            "mode": "script",
+            "value": "(function execute() {\n    return vaVars.search_again || !vaVars.catalog_item_id;\n})()\n"
+          },
+          "loading": false,
+          "useTemplateTopic": false
+        },
+        "6553791ec42c4b71849c264a82c96673": {
+          "id": "6553791ec42c4b71849c264a82c96673",
+          "stepType": "Decision",
+          "name": "Decision"
+        },
+        "40e9482b12f1476eb13aa5f9ca0fed53": {
+          "id": "40e9482b12f1476eb13aa5f9ca0fed53",
+          "stepType": "TextOutput",
+          "name": "Try Again",
+          "value": [
+            {
+              "value": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "text": "OK, let's try again."
+                    }
+                  ]
+                }
+              ],
+              "mode": "simple"
+            }
+          ],
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "secure": false,
+          "requestFeedback": true
+        },
+        "895de3f758504dfb9808317581194f36": {
+          "id": "895de3f758504dfb9808317581194f36",
+          "stepType": "Decision",
+          "name": "Decision"
+        },
+        "60504290e56b4a1892ed4e2cf62553e4": {
+          "id": "60504290e56b4a1892ed4e2cf62553e4",
+          "stepType": "LinkOutput",
+          "name": "Link Output",
+          "url": {
+            "value": "(function execute() {\n    var item = new sn_sc.CatItem(vaInputs.catalog_item_id);\n\n    if (item &amp;&amp; item.getRecordClass() === \"sc_cat_item_guide\")\n        return vaVars.baseUri + vaVars.portalName + '?id=sc_cat_item_guide&amp;sys_id=' + vaInputs.catalog_item_id + '&amp;referrer=va';\n    \n    return vaVars.baseUri + vaVars.portalName + '?id=sc_cat_item&amp;sys_id=' + vaInputs.catalog_item_id + '&amp;referrer=va';\n})()",
+            "mode": "script"
+          },
+          "label": {
+            "value": "(function execute() {\n    var item = new sn_sc.CatItem(vaInputs.catalog_item_id);\n    if (item) {\n        var catItemJson = item.read({\n            'name' : ''\n        }, false);\n        return catItemJson.name || '';\n    }\n    return '';\n})()\n",
+            "mode": "script"
+          },
+          "header": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": "Use the link below to submit your request:"
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "applicability": {
+            "mode": "script",
+            "value": "(function execute() {\n    /* Return true or false to indicate if the topic or topic node can run\n       and be discoverable (or not).  For example:\n\n       var applicability = vaInputs.first_name == 'Bill' ? true : false;\n       return applicability;\n    */\n    return vaInputs.catalog_item_id != '-1';\n})()\n"
+          },
+          "linkType": "single",
+          "introMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "listOfLinks": ""
+        },
+        "5353a1fed5b74ba88ef39fe6bbf41757": {
+          "id": "5353a1fed5b74ba88ef39fe6bbf41757",
+          "stepType": "ReusableTopic",
+          "name": "Request Catalog Item",
+          "fields": [],
+          "reusableTopicChoice": "Request Catalog Item",
+          "reusableTopicId": "a39acd71c3a3330012d1758a7ff57eb6",
+          "inputs": {
+            "catalog_item_id": {
+              "value": "(function execute() {\n\n    if (vaVars.catalog_item_id == '') {\n        return vaInputs.catalog_item_id.toString()\n    }\n\n    else\n        return vaVars.catalog_item_id.toString();\n\n})()\n",
+              "mode": "script",
+              "type": "String"
+            },
+            "execute_contextual_search": {
+              "value": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "text": ""
+                    },
+                    {
+                      "text": "false"
+                    },
+                    {
+                      "text": ""
+                    }
+                  ]
+                }
+              ],
+              "mode": "simple",
+              "type": "String"
+            },
+            "confirm_catalog_item": {
+              "value": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "text": ""
+                    },
+                    {
+                      "text": "true"
+                    },
+                    {
+                      "text": ""
+                    }
+                  ]
+                }
+              ],
+              "mode": "simple",
+              "type": "String"
+            },
+            "show_end_state_card": {
+              "value": "false",
+              "mode": "simple",
+              "type": "True/False"
+            }
+          },
+          "outputs": [
+            {
+              "id": "9b3d9b2c65594d4995eb857ac0b86696",
+              "value": "record_id",
+              "mapping": "record_id",
+              "preventDisable": true
+            },
+            {
+              "id": "dc62fc7b09f64a4281a24a539cffea46",
+              "value": "record_table",
+              "mapping": "record_table",
+              "preventDisable": true
+            },
+            {
+              "id": "f1e67d9a46ee4e50b654281cd6dfe335",
+              "value": "variables",
+              "mapping": "variables",
+              "preventDisable": false
+            }
+          ],
+          "variableIds": [
+            "9b3d9b2c65594d4995eb857ac0b86696",
+            "dc62fc7b09f64a4281a24a539cffea46",
+            "f1e67d9a46ee4e50b654281cd6dfe335"
+          ],
+          "outdatedNote": false,
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "loading": false,
+          "useTemplateTopic": false
+        },
+        "2fdc5383344f43e8bd5fa9adff735107": {
+          "id": "2fdc5383344f43e8bd5fa9adff735107",
+          "stepType": "Decision",
+          "name": "Decision"
+        },
+        "6868ad3174a14104a566b9e89c6c89eb": {
+          "id": "6868ad3174a14104a566b9e89c6c89eb",
+          "stepType": "TextOutput",
+          "name": "Request Complete Message",
+          "value": [
+            {
+              "value": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "text": ""
+                    },
+                    {
+                      "text": "Your request has been submitted. Here are the details:"
+                    },
+                    {
+                      "text": ""
+                    }
+                  ]
+                }
+              ],
+              "mode": "simple"
+            }
+          ],
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "secure": false,
+          "requestFeedback": true
+        },
+        "bc21f6eab4254f2ea3d2cbb06b32cb16": {
+          "id": "bc21f6eab4254f2ea3d2cbb06b32cb16",
+          "stepType": "Decision",
+          "name": "Decision"
+        },
+        "b44a430fbf5e4fccac6f806ea9856546": {
+          "stepType": "ChoicePrompt",
+          "name": "Search Again",
+          "prompt": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": "Would you like to keep searching?"
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": {
+            "mode": "script",
+            "value": "(function execute() {\n       return !vaVars.query_search;\n})()\n"
+          },
+          "optional": false,
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "variableId": "473a93906c694a938be4e70f69ac35a2",
+          "id": "b44a430fbf5e4fccac6f806ea9856546",
+          "withNluUserInput": true,
+          "skipIfFulfilled": true,
+          "entity": {
+            "id": "",
+            "label": ""
+          },
+          "skippable": {
+            "value": "",
+            "mode": "query"
+          },
+          "cardMetadata": {
+            "mode": "card",
+            "metadataScript": "",
+            "cardTemplate": "",
+            "cardFields": {},
+            "cardDefinition": {}
+          },
+          "hasCardHeader": false,
+          "skipReprompt": {
+            "value": "",
+            "mode": "query"
+          },
+          "detailDescription": ""
+        },
+        "13add439246c498299716fd4335f84df": {
+          "id": "13add439246c498299716fd4335f84df",
+          "stepType": "TextOutput",
+          "name": "Item not found",
+          "value": [
+            {
+              "value": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "text": ""
+                    },
+                    {
+                      "text": "I couldn't find any item that matches your search query"
+                    },
+                    {
+                      "text": ""
+                    }
+                  ]
+                }
+              ],
+              "mode": "simple"
+            }
+          ],
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "secure": false,
+          "requestFeedback": true
+        },
+        "d8b4c779c5db4ff29b0bafca9205c3d0": {
+          "id": "d8b4c779c5db4ff29b0bafca9205c3d0",
+          "stepType": "Component",
+          "name": "No Deflection",
+          "fields": [],
+          "reusableTopicId": "7fb4ca055303201033cdddeeff7b12b3",
+          "reusableTopicChoice": "Deflection",
+          "sourceType": "TOPIC_BLOCK",
+          "loading": false,
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "inputs": {
+            "deflection_configuration": {
+              "value": "5292005253213010000dddeeff7b126c",
+              "mode": "string",
+              "type": "Reference",
+              "table": "ssa_deflection_configuration"
+            },
+            "deflection_pattern": {
+              "value": "9ee3409253213010000dddeeff7b123b",
+              "mode": "string",
+              "type": "Reference",
+              "table": "ssa_deflection_pattern"
+            },
+            "activity_table": {
+              "value": "",
+              "mode": "simple",
+              "type": "String"
+            },
+            "activity_ids": {
+              "value": "",
+              "mode": "simple",
+              "type": "String"
+            }
+          },
+          "outputs": [],
+          "outdatedNote": false,
+          "variableIds": []
+        },
+        "41db700e7d81486eae61ecfe23dd3946": {
+          "id": "41db700e7d81486eae61ecfe23dd3946",
+          "stepType": "Component",
+          "name": "Deflection: Request Complete",
+          "fields": [],
+          "reusableTopicId": "7fb4ca055303201033cdddeeff7b12b3",
+          "reusableTopicChoice": "Deflection",
+          "sourceType": "TOPIC_BLOCK",
+          "loading": false,
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "inputs": {
+            "deflection_configuration": {
+              "value": "5292005253213010000dddeeff7b126c",
+              "mode": "string",
+              "type": "Reference",
+              "table": "ssa_deflection_configuration"
+            },
+            "deflection_pattern": {
+              "value": "f063885253213010000dddeeff7b1221",
+              "mode": "string",
+              "type": "Reference",
+              "table": "ssa_deflection_pattern"
+            },
+            "activity_table": {
+              "value": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "text": ""
+                    },
+                    {
+                      "type": "datapill",
+                      "dataPill": {
+                        "value": "{{vaInputs.record_table}}",
+                        "displayValue": "Input Variables➛Record_table"
+                      },
+                      "children": [
+                        {
+                          "text": ""
+                        }
+                      ]
+                    },
+                    {
+                      "text": ""
+                    }
+                  ]
+                }
+              ],
+              "mode": "string",
+              "type": "String"
+            },
+            "activity_ids": {
+              "value": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "text": ""
+                    },
+                    {
+                      "type": "datapill",
+                      "dataPill": {
+                        "value": "{{vaInputs.record_id}}",
+                        "displayValue": "Input Variables➛Record_id"
+                      },
+                      "children": [
+                        {
+                          "text": ""
+                        }
+                      ]
+                    },
+                    {
+                      "text": ""
+                    }
+                  ]
+                }
+              ],
+              "mode": "string",
+              "type": "String"
+            }
+          },
+          "outputs": [],
+          "outdatedNote": false,
+          "variableIds": []
+        },
+        "fc736bb76e1645e88f7bce5a0ff85042": {
+          "id": "fc736bb76e1645e88f7bce5a0ff85042",
+          "stepType": "Component",
+          "name": "Deflection: Link Provided",
+          "fields": [],
+          "reusableTopicId": "7fb4ca055303201033cdddeeff7b12b3",
+          "reusableTopicChoice": "Deflection",
+          "sourceType": "TOPIC_BLOCK",
+          "loading": false,
+          "applicability": {
+            "mode": "script",
+            "value": "(function execute() {\n    /* Return true or false to indicate if the topic or topic node can run\n       and be discoverable (or not).  For example:\n\n       var applicability = vaInputs.first_name == 'Bill' ? true : false;\n       return applicability;\n    */\n    return vaInputs.catalog_item_id != '-1';\n})()\n"
+          },
+          "inputs": {
+            "deflection_configuration": {
+              "value": "5292005253213010000dddeeff7b126c",
+              "mode": "string",
+              "type": "Reference",
+              "table": "ssa_deflection_configuration"
+            },
+            "deflection_pattern": {
+              "value": "6eb34c5253213010000dddeeff7b12be",
+              "mode": "string",
+              "type": "Reference",
+              "table": "ssa_deflection_pattern"
+            },
+            "activity_table": {
+              "value": "",
+              "mode": "simple",
+              "type": "String"
+            },
+            "activity_ids": {
+              "value": "",
+              "mode": "simple",
+              "type": "String"
+            }
+          },
+          "outputs": [],
+          "outdatedNote": false,
+          "variableIds": []
+        },
+        "c26c57a271b64f35814b8114bd7cb3de": {
+          "id": "c26c57a271b64f35814b8114bd7cb3de",
+          "name": "Set search term",
+          "script": "(function execute() {\n\n    vaVars.search = vaInputs.search.toString();\n    vaVars.search_catalogitem = vaInputs.search_catalogitem;\n    vaVars.search_hardware = vaInputs.search_hardware;\n    vaVars.search_software = vaInputs.search_software;\n\n    if (vaInputs.search != ''){\n        vaVars.direct_search = true;\n        return;\n    }\n        \n\n    if (vaContext.getRequesterLang() == 'en') {\n        var gr = new GlideRecord('sc_cat_item');\n        gr.addActiveQuery();\n        gr.addQuery('name', vaInputs.search_catalogitem);\n        gr.query();\n\n        while (gr.next()) {\n            vaVars.catalog_item_id = gr.getValue('sys_id');\n            vaInputs.catalog_item_id = vaVars.catalog_item_id;\n        }\n        \n    } else {\n\n        var gr = new GlideRecord('sys_translated_text');\n        \n        gr.addQuery('value', vaInputs.search_catalogitem);\n        gr.addQuery('tablename', 'sc_cat_item');\n        gr.addQuery('language', vaContext.getRequesterLang())\n        gr.addQuery('fieldname', 'name')\n        gr.query();\n\n        while (gr.next()) {\n            var gr2 = new GlideRecord('sc_cat_item');\n            gr2.addActiveQuery();\n            gr2.addQuery('sys_id', gr.getValue('documentkey'));\n            gr2.query();\n            if (gr2.next()) {\n                vaVars.catalog_item_id = gr.getValue('documentkey');\n                vaInputs.catalog_item_id = vaVars.catalog_item_id;\n            }\n        }\n    }\n\n    if (vaVars.search_catalogitem != null) {\n        if (vaVars.search_hardware == '' &amp;&amp; vaVars.search_software == '')\n            vaVars.hardware_software_entity_mapped = false;\n\n        else\n            vaVars.hardware_software_entity_mapped = true;\n    }\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": {
+            "mode": "query",
+            "value": ""
+          }
+        },
+        "724aedb8442a419cacf27cd8f0ab809c": {
+          "id": "724aedb8442a419cacf27cd8f0ab809c",
+          "stepType": "ScriptOutput",
+          "name": "Submitted Request Record",
+          "output_type": "single_part",
+          "script": "(function execute() {\n    \n    var title = '';\n    var subtitle = '';\n    var fields = [];\n\n    var gr = new GlideRecord(vaVars.record_table);\n    gr.addQuery('sys_id',vaVars.record_id);\n    gr.query();\n    title = gr.getClassDisplayValue();\n    if(gr.next()){\n        subtitle = gr.getValue('task_effective_number').toString();\n        if (gr.isValidField('short_description')) {\n            fields.push({\n                \"fieldLabel\": gr.getElement('short_description').getLabel(),\n                \"fieldValue\": gr.getDisplayValue('short_description').toString()\n            });\n        }\n        if (gr.isValidField('state')) {\n            fields.push({\n                \"fieldLabel\": gr.getElement('state').getLabel(),\n                \"fieldValue\": gr.getDisplayValue('state').toString()\n            });\n        }\n    }\n    \n    var card_data = JSON.stringify({\n            \"title\":title,\n            \"subtitle\":subtitle,\n            \"fields\":fields,\n            \"url\":vaVars.recordLink.toString()\n      });\n    return vaSystem.renderCard(\"Card\", card_data); \n})()\n",
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          }
+        },
+        "207bb6c02fd645d28d9f9a5d83c430fc": {
+          "id": "207bb6c02fd645d28d9f9a5d83c430fc",
+          "name": "Check if Item is supported by VA?",
+          "script": "(function execute() {\n    vaVars.catalog_item_id = vaInputs.catalog_item_id;\n    vaVars.is_conversational = new sn_sc.CatalogConversationHelper().hasVASupport(vaVars.catalog_item_id.toString());\n    vaInputs.is_conversational = vaVars.is_conversational;\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          }
+        },
+        "e17d7ae3a14d4797807fa4147d3c5f6e": {
+          "id": "e17d7ae3a14d4797807fa4147d3c5f6e",
+          "stepType": "TextPrompt",
+          "name": "Search",
+          "prompt": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": "What are you looking for?"
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": {
+            "value": "vaInputs.search_catalogitemISEMPTY^vaInputs.search_hardwareISEMPTY^vaInputs.search_softwareISEMPTY^NQvaInputs.search_againISNOTEMPTY",
+            "mode": "query"
+          },
+          "skippable": {
+            "value": "",
+            "mode": "query"
+          },
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "withNluUserInput": false,
+          "skipIfFulfilled": false,
+          "variableId": "b2c92474d01044dfbe1475400b7d7b6f",
+          "inputType": {
+            "format": "Text",
+            "script": ""
+          },
+          "skipReprompt": {
+            "value": "",
+            "mode": "query"
+          },
+          "detailDescription": "",
+          "requestFeedback": true
+        },
+        "62ac32d6e26a460c81507a458fd7c6b1": {
+          "id": "62ac32d6e26a460c81507a458fd7c6b1",
+          "stepType": "TextPrompt",
+          "name": "Search Software",
+          "prompt": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": "What are you looking for?"
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": {
+            "mode": "script",
+            "value": "(function execute() {\n    /* Return true or false to indicate if the topic or topic node can run\n       and be discoverable (or not).  For example:\n\n       var applicability = vaInputs.first_name == 'Bill' ? true : false;\n       return applicability;\n    */\n    return false;\n})()\n"
+          },
+          "skippable": {
+            "mode": "query",
+            "value": ""
+          },
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "withNluUserInput": true,
+          "skipIfFulfilled": true,
+          "variableId": "f8c18e23b8374afea7202425492e1965",
+          "inputType": {
+            "format": "Text",
+            "script": ""
+          },
+          "skipReprompt": {
+            "value": "",
+            "mode": "query"
+          },
+          "detailDescription": "",
+          "requestFeedback": true
+        },
+        "24d8bdfab0b443b5be855fc9bdd8f75d": {
+          "id": "24d8bdfab0b443b5be855fc9bdd8f75d",
+          "stepType": "TextPrompt",
+          "name": "Search Hardware",
+          "prompt": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": "What are you looking for?"
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": {
+            "mode": "script",
+            "value": "(function execute() {\n    /* Return true or false to indicate if the topic or topic node can run\n       and be discoverable (or not).  For example:\n\n       var applicability = vaInputs.first_name == 'Bill' ? true : false;\n       return applicability;\n    */\n    return false;\n})()\n"
+          },
+          "skippable": {
+            "mode": "query",
+            "value": ""
+          },
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "withNluUserInput": true,
+          "skipIfFulfilled": true,
+          "variableId": "9f1a407052804d5f8e60a44b8d1bf6cb",
+          "inputType": {
+            "format": "Text",
+            "script": ""
+          },
+          "skipReprompt": {
+            "value": "",
+            "mode": "query"
+          },
+          "detailDescription": "",
+          "requestFeedback": true
+        },
+        "6b079922a0b44249b2e63ca9f64df37c": {
+          "id": "6b079922a0b44249b2e63ca9f64df37c",
+          "stepType": "TextPrompt",
+          "name": "Search CatalogItem",
+          "prompt": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": ""
+                  },
+                  {
+                    "text": "What are you looking for?"
+                  },
+                  {
+                    "text": ""
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": {
+            "mode": "script",
+            "value": "(function execute() {\n    /* Return true or false to indicate if the topic or topic node can run\n       and be discoverable (or not).  For example:\n\n       var applicability = vaInputs.first_name == 'Bill' ? true : false;\n       return applicability;\n    */\n    return false;\n})()\n"
+          },
+          "optional": false,
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "withNluUserInput": true,
+          "skipIfFulfilled": true,
+          "entity": {
+            "id": "",
+            "label": ""
+          },
+          "variableId": "9defef30101b4caeaacfd9662a42757f",
+          "skippable": {
+            "value": "",
+            "mode": "query"
+          },
+          "inputType": {
+            "format": "Text",
+            "script": ""
+          },
+          "skipReprompt": {
+            "value": "",
+            "mode": "query"
+          },
+          "detailDescription": "",
+          "requestFeedback": true
+        },
+        "9b009cea3bef46d690babab0ce49f945": {
+          "id": "9b009cea3bef46d690babab0ce49f945",
+          "name": "Set variables",
+          "script": "(function execute() {\n  vaVars.search_again = true;\n  vaVars.catalog_item_id = '';\n  vaInputs.catalog_item_id = '';\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          }
+        },
+        "dbc594039e9349eab0f0a2a612d7d938": {
+          "id": "dbc594039e9349eab0f0a2a612d7d938",
+          "stepType": "Decision",
+          "name": "Decision"
+        },
+        "794eb3c742e240f39017587764aacbf1": {
+          "id": "794eb3c742e240f39017587764aacbf1",
+          "name": "Hardware/Software Search",
+          "script": "(function execute() {\n    vaVars.hardware_software_entity_searched = true;\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          }
+        },
+        "dc253ed4bc8b48eeb95aa103ee11c498": {
+          "id": "dc253ed4bc8b48eeb95aa103ee11c498",
+          "name": "Set variables",
+          "script": "(function execute() {\n    vaInputs.search_catalogitem = '';\n    vaInputs.search_hardware = '';\n    vaInputs.search_software = '';\n    vaVars.search_catalogitem = '';\n    vaVars.search_hardware = '';\n    vaVars.search_software = '';\n    vaInputs.catalog_item_id = '';\n    vaVars.catalog_item_id = '';\n    vaVars.query_search = true;\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          }
+        },
+        "4ee26ddce82447748774f32bf5a72092": {
+          "id": "4ee26ddce82447748774f32bf5a72092",
+          "stepType": "Decision",
+          "name": "Query search?"
+        },
+        "bf615bf99e2b45f7bff3d00382308db9": {
+          "id": "bf615bf99e2b45f7bff3d00382308db9",
+          "name": "Get Catalog item details",
+          "script": "(function execute() {\n    \n    var catItemObj = new sn_sc.CatItem(vaVars.catalog_item_id);\n    var catItemJson = catItemObj.getItemSummary(false, 'basic');\n    vaVars.image = catItemJson.picture;\n    vaVars.item_title = catItemJson.name;\n\n    var itemJSON = new sn_sc.CatalogConversationHelper().getItem(vaVars.catalog_item_id);\n    vaVars.itemJSON = JSON.stringify(itemJSON);\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": {
+            "mode": "script",
+            "value": "(function execute() {\n    /* Return true or false to indicate if the topic or topic node can run\n       and be discoverable (or not).  For example:\n\n       var applicability = vaInputs.first_name == 'Bill' ? true : false;\n       return applicability;\n    */\n    return vaVars.catalog_item_id != '' || vaInputs.catalog_item_id != '';\n})()\n"
+          }
+        },
+        "5561879441d24e39a98fe8c041aa755b": {
+          "id": "5561879441d24e39a98fe8c041aa755b",
+          "stepType": "TextOutput",
+          "name": "Description",
+          "secure": false,
+          "value": [
+            {
+              "value": "(function execute() {\n    var itemJson = JSON.parse(vaVars.itemJSON);\n    if (!gs.nil(itemJson.description))\n        return gs.getMessage(\"Here are some more details about {0}{1}\", [vaVars.item_title, itemJson.description]);\n})()\n",
+              "mode": "script"
+            }
+          ],
+          "applicability": {
+            "mode": "script",
+            "value": "(function execute() {\n    return vaInputs.catalog_item_id  != '-1';\n})()\n"
+          },
+          "requestFeedback": true
+        },
+        "66dabbe5198441f981e4e1f54c11ff00": {
+          "id": "66dabbe5198441f981e4e1f54c11ff00",
+          "stepType": "TextOutput",
+          "name": "Not found",
+          "secure": false,
+          "value": [
+            {
+              "value": "(function execute() {\n    if (vaVars.query_search)\n        return gs.getMessage(\"I'm sorry, I wasn't able to find anything that matches this request, but your questions are helping me learn.\");\n    else\n        return gs.getMessage(\"I'm sorry, I wasn't able to find anything that matches this request.\");\n})()\n",
+              "mode": "script"
+            }
+          ],
+          "applicability": {
+            "mode": "query",
+            "value": ""
+          },
+          "requestFeedback": true
+        },
+        "ec3a0404411a466cbe61cf9168ba87dd": {
+          "id": "ec3a0404411a466cbe61cf9168ba87dd",
+          "stepType": "ImageOutput",
+          "name": "Image",
+          "url": {
+            "value": "(function execute() {\n    /* Return a quoted string.  For example:\n\n       if (vaInputs.first_name == 'Bill') {\n           return gs.getMessageLang(\"hi there {0}\", vaContext.getRequesterLang(), [vaInputs.first_name]);\n       } else {\n           return gs.getMessageLang(\"how are you {0}\", vaContext.getRequesterLang(), [vaInputs.last_name]);\n       }\n    */\n    return vaVars.baseUri + vaVars.image;\n})()\n",
+            "mode": "script"
+          },
+          "altText": {
+            "value": "",
+            "mode": "simple"
+          },
+          "variableId": "",
+          "applicability": {
+            "mode": "script",
+            "value": "(function execute() {\n\n    return vaVars.catalog_item_id != '' &amp;&amp; vaInputs.search == '' &amp;&amp; vaVars.image_not_shown;\n    \n})()\n"
+          }
+        },
+        "9bcdc720908a4a038c3596837aa3168f": {
+          "id": "9bcdc720908a4a038c3596837aa3168f",
+          "name": "Set catalog item variables",
+          "script": "(function execute() {\n    if(vaInputs.catalog_item_id == null &amp;&amp; vaVars.catalog_item_id != null)\n      vaInputs.catalog_item_id = vaVars.catalog_item_id;\n    else if(vaVars.catalog_item_id == null &amp;&amp; vaInputs.catalog_item_id != null)\n     vaVars.catalog_item_id = vaInputs.catalog_item_id;\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          }
+        },
+        "e314b8b006df471b9c6897b51e7a1228": {
+          "id": "e314b8b006df471b9c6897b51e7a1228",
+          "stepType": "Decision",
+          "name": "Decision"
+        },
+        "2a0d81990d6a41bc8ec61465e5ca1219": {
+          "id": "2a0d81990d6a41bc8ec61465e5ca1219",
+          "name": "Process end state details",
+          "script": "(function execute() {\n    var tableName = vaInputs.record_table.toString();\n    var recordId = vaInputs.record_id.toString();\n\n    vaVars.record_table = tableName;\n    vaVars.record_id = recordId;\n\n    var gr = new GlideRecord(tableName);\n    gr.addQuery('sys_id', recordId);\n    gr.query();\n\n    if (gr.next()) {\n        vaVars.isTaskBasedTable = !!(gr.parent != null &amp;&amp; gr.parent.getTableName() == 'task')\n    }\n\n\n    var pageId = 'form';\n    if (vaVars.isTaskBasedTable)\n        pageId = 'ticket';\n\n    var link = '';\n    var screenId = '';\n    if (vaVars.portalName === 'mesp') {\n        var mobileDLink = new global.MobileDeepLinkGenerator('request');\n        if (tableName == 'sc_req_item')\n            screenId = '7516f9d787232300e0ef0cf888cb0b4d';\n        else if (tableName == 'sc_request')\n            screenId = '276dd3edb79033001befcd58de11a9c7';\n        else if (tableName == 'incident')\n            screenId = 'ebb94d9c0f2033001befa68ca8767e4e';\n        else\n            screenId = 'd39eb2db87772300e0ef0cf888cb0bcb';\n\n        link = mobileDLink.getFormScreenLink(screenId, tableName, recordId);\n    } else\n        link = vaVars.baseUri + vaVars.portalName + \"?id=\" + pageId + \"&amp;table=\" + tableName + \"&amp;sys_id=\" + recordId;\n\n    vaVars.recordLink = link;\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          }
+        },
+        "5bf9cba1da9d4a6b9cb285f3c319ebe5": {
+          "id": "5bf9cba1da9d4a6b9cb285f3c319ebe5",
+          "stepType": "Decision",
+          "name": "Decision"
+        },
+        "93b634cdd365467c9d7a56921a9b8761": {
+          "id": "93b634cdd365467c9d7a56921a9b8761",
+          "stepType": "LinkOutput",
+          "name": "Submitted record link",
+          "url": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": ""
+                  },
+                  {
+                    "type": "datapill",
+                    "dataPill": {
+                      "value": "{{vaVars.recordLink}}",
+                      "displayValue": "Script Variables➛recordLink"
+                    },
+                    "children": [
+                      {
+                        "text": ""
+                      }
+                    ]
+                  },
+                  {
+                    "text": ""
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "label": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": "Click here to view the created record"
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "header": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": "Your request has been submitted"
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "linkType": "single",
+          "introMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "listOfLinks": ""
+        },
+        "a987af2f317c4cd886474b2448732e85": {
+          "id": "a987af2f317c4cd886474b2448732e85",
+          "stepType": "ImageOutput",
+          "name": "Image",
+          "url": {
+            "value": "(function execute() {\n    return vaVars.baseUri + vaVars.image.toString();\n})()\n",
+            "mode": "script"
+          },
+          "altText": {
+            "value": "",
+            "mode": "simple"
+          },
+          "variableId": "",
+          "applicability": {
+            "mode": "script",
+            "value": "(function execute() {\n    return vaInputs.search == '' &amp;&amp; vaVars.catalog_item_id != '' &amp;&amp; vaVars.image_not_shown;\n})()\n"
+          }
+        },
+        "4d4e9b681d444580a8db512c473c750d": {
+          "id": "4d4e9b681d444580a8db512c473c750d",
+          "name": "Set variables",
+          "script": "(function execute() {\n    vaVars.image_not_shown=false;\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": {
+            "mode": "script",
+            "value": "(function execute() {\n\n    return vaVars.catalog_item_id != '' &amp;&amp; vaInputs.search == '';\n    \n})()\n"
+          }
+        },
+        "46416fed16294f9fb16138480354e507": {
+          "id": "46416fed16294f9fb16138480354e507",
+          "name": "Set variables",
+          "script": "(function execute() {\n    vaVars.image_not_shown=false;\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": {
+            "mode": "script",
+            "value": "(function execute() {\n    return vaInputs.search == '' &amp;&amp; vaVars.catalog_item_id != '';\n})()\n"
+          }
+        }
+      },
+      "edges": [
+        {
+          "id": "46debc7f575c4fd0881c79ae59a9cbf7",
+          "edgeType": "Branch",
+          "source": "dbc594039e9349eab0f0a2a612d7d938",
+          "target": "e314b8b006df471b9c6897b51e7a1228",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "script",
+            "value": "(function execute() {\n    return !vaVars.hardware_software_entity_searched &amp;&amp; !vaVars.direct_search;\n})()\n"
+          },
+          "label": "No"
+        },
+        {
+          "id": "0070117935564463814fff051d30a679",
+          "edgeType": "Branch",
+          "source": "dbc594039e9349eab0f0a2a612d7d938",
+          "target": "dc253ed4bc8b48eeb95aa103ee11c498",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "script",
+            "value": "(function execute() {\n    \n    return vaVars.direct_search || vaVars.hardware_software_entity_searched;\n})()\n"
+          },
+          "label": "Yes"
+        },
+        {
+          "id": "e5d2b2b7b0ed4297b403f101b09a5a35",
+          "edgeType": "Edge",
+          "source": "9bcdc720908a4a038c3596837aa3168f",
+          "target": "6553791ec42c4b71849c264a82c96673",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "68ae31e306664460828b870c40420f66",
+          "edgeType": "Branch",
+          "source": "6553791ec42c4b71849c264a82c96673",
+          "target": "13add439246c498299716fd4335f84df",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "script",
+            "value": "(function execute() {\n    return vaInputs.catalog_item_id == '' || vaVars.catalog_item_id == null;\n})()\n"
+          },
+          "label": "Didn't recieve an itemID"
+        },
+        {
+          "id": "ad6e8d7af1934005a6da5c39877f3753",
+          "edgeType": "Branch",
+          "source": "6553791ec42c4b71849c264a82c96673",
+          "target": "207bb6c02fd645d28d9f9a5d83c430fc",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "script",
+            "value": "(function execute() {\n   \n   return (vaVars.catalog_item_id != null &amp;&amp; vaInputs.catalog_item_id != \"-1\");\n   \n})()\n"
+          },
+          "label": "Recieved an ItemID"
+        },
+        {
+          "id": "d8eff41426714368ac7896fe57c5ed10",
+          "edgeType": "Edge",
+          "source": "e17d7ae3a14d4797807fa4147d3c5f6e",
+          "target": "c26c57a271b64f35814b8114bd7cb3de",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "98f6b8864f50447e814f670d365e7f00",
+          "edgeType": "Branch",
+          "source": "895de3f758504dfb9808317581194f36",
+          "target": "ec3a0404411a466cbe61cf9168ba87dd",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "script",
+            "value": "(function execute() {\n   \n        return (!vaVars.is_conversational || !vaInputs.is_conversational);\n\n})()\n"
+          },
+          "label": "Not Supported"
+        },
+        {
+          "id": "a385b92ec2f24aa2b47c3439162f0949",
+          "edgeType": "Edge",
+          "source": "207bb6c02fd645d28d9f9a5d83c430fc",
+          "target": "bf615bf99e2b45f7bff3d00382308db9",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "9424a86873fc448b8302a5c5d43dd8a2",
+          "edgeType": "Edge",
+          "source": "bf615bf99e2b45f7bff3d00382308db9",
+          "target": "895de3f758504dfb9808317581194f36",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "62bf3505ecf746ae9d5a632ee4cd7faa",
+          "edgeType": "Branch",
+          "source": "6553791ec42c4b71849c264a82c96673",
+          "target": "66dabbe5198441f981e4e1f54c11ff00",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "script",
+            "value": "(function execute() {\n    return vaInputs.catalog_item_id == \"-1\";\n})()\n"
+          },
+          "label": "itemIid is -1"
+        },
+        {
+          "id": "b1fad4cc34d9435cbfe0c81ed86bd4d2",
+          "edgeType": "Edge",
+          "source": "d8b4c779c5db4ff29b0bafca9205c3d0",
+          "target": "37614f50996541419aaf4eac693c030b",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "90cf256a3b7b447bb0b90d77a693bf77",
+          "edgeType": "Edge",
+          "source": "dc253ed4bc8b48eeb95aa103ee11c498",
+          "target": "e17d7ae3a14d4797807fa4147d3c5f6e",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "19455028ee664cd78f6ea9c835345cec",
+          "edgeType": "Edge",
+          "source": "794eb3c742e240f39017587764aacbf1",
+          "target": "6b94a7e30472425093bef0cdcaa200a7",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "acdd8fa18d214a8f88cd58eab34cc3d5",
+          "edgeType": "Edge",
+          "source": "5353a1fed5b74ba88ef39fe6bbf41757",
+          "target": "2fdc5383344f43e8bd5fa9adff735107",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "c7f83d25f26e40f0aa4f413bb4d96982",
+          "edgeType": "Edge",
+          "source": "fc736bb76e1645e88f7bce5a0ff85042",
+          "target": "b44a430fbf5e4fccac6f806ea9856546",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "dc8f52d2fa9f40168cab3e018e13d680",
+          "edgeType": "Edge",
+          "source": "62ac32d6e26a460c81507a458fd7c6b1",
+          "target": "e17d7ae3a14d4797807fa4147d3c5f6e",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "ff727488ef504d409ae9b47f1b97f5f7",
+          "edgeType": "Edge",
+          "source": "24d8bdfab0b443b5be855fc9bdd8f75d",
+          "target": "62ac32d6e26a460c81507a458fd7c6b1",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "8e33e68efc8147b18b67c8d4eca8ee42",
+          "edgeType": "Edge",
+          "source": "c26c57a271b64f35814b8114bd7cb3de",
+          "target": "6b94a7e30472425093bef0cdcaa200a7",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "a49b338cc45447d9a946053cfe432e5c",
+          "edgeType": "Branch",
+          "source": "2fdc5383344f43e8bd5fa9adff735107",
+          "target": "b44a430fbf5e4fccac6f806ea9856546",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "value": "record_idEMPTYSTRING",
+            "mode": "query"
+          },
+          "label": "Catalog Request Not Complete"
+        },
+        {
+          "id": "312a05905ffa4cc3baead7a937673eab",
+          "edgeType": "Edge",
+          "source": "724aedb8442a419cacf27cd8f0ab809c",
+          "target": "41db700e7d81486eae61ecfe23dd3946",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "1c4b6fb4645745779adce711ce9a2158",
+          "edgeType": "Branch",
+          "source": "2fdc5383344f43e8bd5fa9adff735107",
+          "target": "60504290e56b4a1892ed4e2cf62553e4",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "script",
+            "value": "(function execute() {\n    return !!vaInputs.record_id.getValue() &amp;&amp; vaInputs.record_id.getValue() == '-1';\n})()\n"
+          },
+          "label": "Item has no VA Support"
+        },
+        {
+          "id": "479530c4a5e84a1d9eec093249f4a3cd",
+          "edgeType": "Edge",
+          "source": "b44a430fbf5e4fccac6f806ea9856546",
+          "target": "bc21f6eab4254f2ea3d2cbb06b32cb16",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "d59b703c0087436a930e950a5c7507d5",
+          "edgeType": "Edge",
+          "source": "13add439246c498299716fd4335f84df",
+          "target": "b44a430fbf5e4fccac6f806ea9856546",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "dee1e53bee914fd6836fdbf20eb65e56",
+          "edgeType": "Branch",
+          "source": "bc21f6eab4254f2ea3d2cbb06b32cb16",
+          "target": "d8b4c779c5db4ff29b0bafca9205c3d0",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "value": "vaInputs.search_again=1",
+            "mode": "query"
+          },
+          "label": "No"
+        },
+        {
+          "id": "8bfc7544c6f44c7f9a585acf2868dee6",
+          "edgeType": "Edge",
+          "source": "41db700e7d81486eae61ecfe23dd3946",
+          "target": "37614f50996541419aaf4eac693c030b",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "798fe8f634f74340b4a05c5f13319256",
+          "edgeType": "Edge",
+          "source": "60504290e56b4a1892ed4e2cf62553e4",
+          "target": "fc736bb76e1645e88f7bce5a0ff85042",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "a82eb47adf614262844c5670ff74c38e",
+          "edgeType": "Edge",
+          "source": "6868ad3174a14104a566b9e89c6c89eb",
+          "target": "724aedb8442a419cacf27cd8f0ab809c",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "5f8b0db04ab3498e9f834558af081a56",
+          "edgeType": "Edge",
+          "source": "182002c5f98a40ddaa3595819443ec3d",
+          "target": "6b079922a0b44249b2e63ca9f64df37c",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "0d5ce2efdc0d4053b04ad1487e522cb2",
+          "edgeType": "Edge",
+          "source": "6b079922a0b44249b2e63ca9f64df37c",
+          "target": "24d8bdfab0b443b5be855fc9bdd8f75d",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "8efc24805e194857aec9b3b211359f4b",
+          "edgeType": "Edge",
+          "source": "40e9482b12f1476eb13aa5f9ca0fed53",
+          "target": "9b009cea3bef46d690babab0ce49f945",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "f1664f23e352458baab0c2de81c99dc0",
+          "edgeType": "Edge",
+          "source": "9b009cea3bef46d690babab0ce49f945",
+          "target": "dbc594039e9349eab0f0a2a612d7d938",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "0c18c94dadd74e4c9e98a074badbb23d",
+          "edgeType": "Branch",
+          "source": "bc21f6eab4254f2ea3d2cbb06b32cb16",
+          "target": "4ee26ddce82447748774f32bf5a72092",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "value": "vaInputs.search_again=0",
+            "mode": "query"
+          },
+          "label": "Yes"
+        },
+        {
+          "id": "fef1b3458b56404d9278e8d368891cdd",
+          "edgeType": "Branch",
+          "source": "4ee26ddce82447748774f32bf5a72092",
+          "target": "40e9482b12f1476eb13aa5f9ca0fed53",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "script",
+            "value": "(function execute() {\n    /* Return true or false to indicate the branch condition's applicability.\n       For example:\n\n       var applies = vaInputs.first_name == 'Bill' ? true : false;\n       return applies;\n    */\n    return !vaVars.query_search;\n})()\n"
+          },
+          "label": "No"
+        },
+        {
+          "id": "22cf17bafb4f4b85a336a15ba0f8b8e9",
+          "edgeType": "Branch",
+          "source": "4ee26ddce82447748774f32bf5a72092",
+          "target": "d8b4c779c5db4ff29b0bafca9205c3d0",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "script",
+            "value": "(function execute() {\n    /* Return true or false to indicate the branch condition's applicability.\n       For example:\n\n       var applies = vaInputs.first_name == 'Bill' ? true : false;\n       return applies;\n    */\n    return vaVars.query_search;\n})()\n"
+          },
+          "label": "Yes"
+        },
+        {
+          "id": "32cf27aa97104fc68e06c8dd73bbd9d9",
+          "edgeType": "Edge",
+          "source": "5561879441d24e39a98fe8c041aa755b",
+          "target": "60504290e56b4a1892ed4e2cf62553e4",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "cd763a4940104195a1779e5c5239d287",
+          "edgeType": "Edge",
+          "source": "66dabbe5198441f981e4e1f54c11ff00",
+          "target": "b44a430fbf5e4fccac6f806ea9856546",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "12cbe57c019040d99ffd8f985c8d5abe",
+          "edgeType": "Edge",
+          "source": "6b94a7e30472425093bef0cdcaa200a7",
+          "target": "9bcdc720908a4a038c3596837aa3168f",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "a7380168c98b4ad48f71f6dda185fcfe",
+          "edgeType": "Branch",
+          "source": "e314b8b006df471b9c6897b51e7a1228",
+          "target": "794eb3c742e240f39017587764aacbf1",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "script",
+            "value": "(function execute() {\n    /* Return true or false to indicate the branch condition's applicability.\n       For example:\n\n       var applies = vaInputs.first_name == 'Bill' ? true : false;\n       return applies;\n    */\n    return vaVars.hardware_software_entity_mapped;\n})()\n"
+          },
+          "label": "Yes"
+        },
+        {
+          "id": "5986f7be945c4a98b5e00cf525e57a4c",
+          "edgeType": "Branch",
+          "source": "e314b8b006df471b9c6897b51e7a1228",
+          "target": "dc253ed4bc8b48eeb95aa103ee11c498",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "script",
+            "value": "(function execute() {\n    /* Return true or false to indicate the branch condition's applicability.\n       For example:\n\n       var applies = vaInputs.first_name == 'Bill' ? true : false;\n       return applies;\n    */\n    return !vaVars.hardware_software_entity_mapped;\n})()\n"
+          },
+          "label": "No"
+        },
+        {
+          "id": "47c6428356164fa0b28042e323c174bb",
+          "edgeType": "Branch",
+          "source": "2fdc5383344f43e8bd5fa9adff735107",
+          "target": "2a0d81990d6a41bc8ec61465e5ca1219",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "script",
+            "value": "(function execute() {\n    return !!vaInputs.record_id.getValue() &amp;&amp; vaInputs.record_id.getValue() != '-1';\n})()\n"
+          },
+          "label": "Catalog Request Complete"
+        },
+        {
+          "id": "4f2b67af358b48bb95fbf42f7d100482",
+          "edgeType": "Edge",
+          "source": "2a0d81990d6a41bc8ec61465e5ca1219",
+          "target": "5bf9cba1da9d4a6b9cb285f3c319ebe5",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "80dd67dae5464391965bf5c9d035e5be",
+          "edgeType": "Branch",
+          "source": "5bf9cba1da9d4a6b9cb285f3c319ebe5",
+          "target": "6868ad3174a14104a566b9e89c6c89eb",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "script",
+            "value": "(function execute() {\n    return vaVars.isTaskBasedTable;\n})()\n"
+          },
+          "label": "Task based table"
+        },
+        {
+          "id": "0cb0d74b806540539b502de0e9ed0262",
+          "edgeType": "Branch",
+          "source": "5bf9cba1da9d4a6b9cb285f3c319ebe5",
+          "target": "93b634cdd365467c9d7a56921a9b8761",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "script",
+            "value": "(function execute() {\n    return !vaVars.isTaskBasedTable;\n})()\n"
+          },
+          "label": "Non-Task based table"
+        },
+        {
+          "id": "1868518dc0c840e2b91e7417fc87c57d",
+          "edgeType": "Edge",
+          "source": "93b634cdd365467c9d7a56921a9b8761",
+          "target": "41db700e7d81486eae61ecfe23dd3946",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "9b366c6b0a014d6c83b30ca14cd50625",
+          "edgeType": "Branch",
+          "source": "895de3f758504dfb9808317581194f36",
+          "target": "a987af2f317c4cd886474b2448732e85",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "script",
+            "value": "(function execute() {\n    return (vaVars.is_conversational || vaInputs.is_conversational);\n})()\n"
+          },
+          "label": "Is Supported"
+        },
+        {
+          "id": "89dcefa1bdb44d7b91d4a749ed0995e2",
+          "edgeType": "Edge",
+          "source": "ec3a0404411a466cbe61cf9168ba87dd",
+          "target": "4d4e9b681d444580a8db512c473c750d",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "ed2599bccbd846ceb7751cc5144990f5",
+          "edgeType": "Edge",
+          "source": "4d4e9b681d444580a8db512c473c750d",
+          "target": "5561879441d24e39a98fe8c041aa755b",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "758eef3d1bc04bf09d7375ef81247263",
+          "edgeType": "Edge",
+          "source": "a987af2f317c4cd886474b2448732e85",
+          "target": "46416fed16294f9fb16138480354e507",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "2e7ddebedd634fbdabc78fa5d4eb1282",
+          "edgeType": "Edge",
+          "source": "46416fed16294f9fb16138480354e507",
+          "target": "5353a1fed5b74ba88ef39fe6bbf41757",
+          "sourcePort": "",
+          "targetPort": ""
+        }
+      ]
+    }
+  },
+  "variables": {
+    "5b3f0e1e274c4084b2cd6a75af9bd7b0": {
+      "id": "5b3f0e1e274c4084b2cd6a75af9bd7b0",
+      "name": "LiveAgent_application",
+      "value": {
+        "mode": "simple",
+        "value": "itsm"
+      },
+      "varType": "script",
+      "label": "LiveAgent_application",
+      "category": "vaVars"
+    },
+    "8c338a44219e4596967d841b6472dc25": {
+      "id": "8c338a44219e4596967d841b6472dc25",
+      "value": {
+        "mode": "script",
+        "value": "(function execute() {\n    return gs.getProperty('glide.servlet.uri');\n})()\n"
+      },
+      "name": "baseUri",
+      "label": "baseUri",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "ae789b21274646e09efbf71477de8ab0": {
+      "id": "ae789b21274646e09efbf71477de8ab0",
+      "value": {
+        "mode": "script",
+        "value": "(function execute() {\n    if (vaContext.deviceType == 'ios' || vaContext.deviceType == 'android')\n        return 'mesp';\n\n    return gs.getProperty('sn_itsm_va.com.snc.itsm.virtualagent.portal_url');\n})()\n"
+      },
+      "name": "portalName",
+      "label": "portalName",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "9defef30101b4caeaacfd9662a42757f": {
+      "id": "9defef30101b4caeaacfd9662a42757f",
+      "name": "search_catalogitem",
+      "label": "Search CatalogItem",
+      "varType": "string",
+      "category": "vaInputs",
+      "secure": false,
+      "encryptionSalt": {
+        "value": "MTYyNDI5NTQxMTYxMSBWQSBEZXNpZ25lciBpcyBhd2Vzb21l",
+        "mode": "simple"
+      },
+      "encryptionHashFunction": "SHA-256",
+      "nodeId": "6b079922a0b44249b2e63ca9f64df37c",
+      "isHidden": false
+    },
+    "cc46889500554982a1ec3ab8b1b81a92": {
+      "category": "vaInputs",
+      "id": "cc46889500554982a1ec3ab8b1b81a92",
+      "label": "User",
+      "name": "user",
+      "table": "sys_user",
+      "varType": "reference"
+    },
+    "473a93906c694a938be4e70f69ac35a2": {
+      "id": "473a93906c694a938be4e70f69ac35a2",
+      "name": "search_again",
+      "label": "Search Again",
+      "varType": "choice",
+      "choices": [
+        {
+          "label": "Yes",
+          "value": "0"
+        },
+        {
+          "label": "No",
+          "value": "1",
+          "checked": true
+        }
+      ],
+      "category": "vaInputs",
+      "nodeId": "b44a430fbf5e4fccac6f806ea9856546",
+      "isHidden": false
+    },
+    "9f1a407052804d5f8e60a44b8d1bf6cb": {
+      "id": "9f1a407052804d5f8e60a44b8d1bf6cb",
+      "name": "search_hardware",
+      "label": "Search Hardware",
+      "varType": "string",
+      "secure": false,
+      "category": "vaInputs",
+      "encryptionHashFunction": "SHA-256",
+      "encryptionSalt": {
+        "value": "MTYzMTY5MjI2Mzk0MCBWQSBEZXNpZ25lciBpcyBhd2Vzb21l",
+        "mode": "simple"
+      },
+      "nodeId": "24d8bdfab0b443b5be855fc9bdd8f75d",
+      "isHidden": false
+    },
+    "e601b9ad308943b2850851ade6a6b9cc": {
+      "id": "e601b9ad308943b2850851ade6a6b9cc",
+      "value": {
+        "mode": "simple",
+        "value": ""
+      },
+      "name": "catalog_item_id",
+      "label": "catalog_item_id",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "c0663d3e761146bca4f7636e05673aac": {
+      "id": "c0663d3e761146bca4f7636e05673aac",
+      "value": {
+        "value": "",
+        "mode": "simple"
+      },
+      "name": "is_conversational",
+      "label": "is_conversational",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "f8c18e23b8374afea7202425492e1965": {
+      "id": "f8c18e23b8374afea7202425492e1965",
+      "name": "search_software",
+      "label": "Search Software",
+      "varType": "string",
+      "secure": false,
+      "category": "vaInputs",
+      "encryptionHashFunction": "SHA-256",
+      "encryptionSalt": {
+        "value": "MTYzNzA2MzQ1Mjg3MSBWQSBEZXNpZ25lciBpcyBhd2Vzb21l",
+        "mode": "simple"
+      },
+      "nodeId": "62ac32d6e26a460c81507a458fd7c6b1",
+      "isHidden": false
+    },
+    "b2c92474d01044dfbe1475400b7d7b6f": {
+      "id": "b2c92474d01044dfbe1475400b7d7b6f",
+      "name": "search",
+      "label": "Search",
+      "varType": "string",
+      "secure": false,
+      "category": "vaInputs",
+      "encryptionHashFunction": "SHA-256",
+      "encryptionSalt": {
+        "value": "MTYzNzA2MzQ2NjM1NyBWQSBEZXNpZ25lciBpcyBhd2Vzb21l",
+        "mode": "simple"
+      },
+      "nodeId": "e17d7ae3a14d4797807fa4147d3c5f6e",
+      "isHidden": false
+    },
+    "d9bdaf2ab6d241429112516825a4cee3": {
+      "id": "d9bdaf2ab6d241429112516825a4cee3",
+      "value": {
+        "value": "",
+        "mode": "simple"
+      },
+      "name": "search_catalogitem",
+      "label": "search_catalogitem",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "de74324ed59046cc8081da44b27ea3b0": {
+      "id": "de74324ed59046cc8081da44b27ea3b0",
+      "value": {
+        "value": "",
+        "mode": "simple"
+      },
+      "name": "search_hardware",
+      "label": "search_hardware",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "5bd62121b81f4c2f9f987782be6be7d4": {
+      "id": "5bd62121b81f4c2f9f987782be6be7d4",
+      "value": {
+        "value": "",
+        "mode": "simple"
+      },
+      "name": "search_software",
+      "label": "search_software",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "722c9c95a9f345db8ff50c4451126989": {
+      "id": "722c9c95a9f345db8ff50c4451126989",
+      "value": {
+        "mode": "simple",
+        "value": "false"
+      },
+      "name": "search_again",
+      "label": "search_again",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "664030310b334fe58b672d3b6c0303a5": {
+      "id": "664030310b334fe58b672d3b6c0303a5",
+      "value": {
+        "mode": "simple",
+        "value": "false"
+      },
+      "name": "hardware_software_entity_searched",
+      "label": "hardware_software_entity_searched",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "d1d301266864440699cd6b32cf445234": {
+      "id": "d1d301266864440699cd6b32cf445234",
+      "value": {
+        "mode": "simple",
+        "value": "false"
+      },
+      "name": "query_search",
+      "label": "query_search",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "26370068bd894d05bc2ed718e58aa317": {
+      "id": "26370068bd894d05bc2ed718e58aa317",
+      "value": {
+        "value": "",
+        "mode": "simple"
+      },
+      "name": "image",
+      "label": "image",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "d4e0b573b771422aaec3c98f1a61c268": {
+      "id": "d4e0b573b771422aaec3c98f1a61c268",
+      "value": {
+        "value": "",
+        "mode": "simple"
+      },
+      "name": "item_title",
+      "label": "item_title",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "d05e6b9b67a64da1accccacf938dddd5": {
+      "id": "d05e6b9b67a64da1accccacf938dddd5",
+      "value": {
+        "value": "",
+        "mode": "simple"
+      },
+      "name": "itemJSON",
+      "label": "itemJSON",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "d95c8ec1e8634c43ba5f989ad2d60889": {
+      "id": "d95c8ec1e8634c43ba5f989ad2d60889",
+      "value": {
+        "value": "",
+        "mode": "simple"
+      },
+      "name": "search",
+      "label": "search",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "0f87a63266d54ea2b76531aacf3a2644": {
+      "id": "0f87a63266d54ea2b76531aacf3a2644",
+      "value": {
+        "mode": "simple",
+        "value": "false"
+      },
+      "name": "direct_search",
+      "label": "direct_search",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "022b60c7cd8d4c5ba2b604d5924b632a": {
+      "id": "022b60c7cd8d4c5ba2b604d5924b632a",
+      "name": "catalog_item_id",
+      "label": "Catalog_item_id",
+      "defaultValue": "catalog_item_id",
+      "varType": "string",
+      "category": "vaInputs",
+      "metadata": {
+        "libraryMappingType": "output"
+      },
+      "preventDisable": true,
+      "nodeId": "6b94a7e30472425093bef0cdcaa200a7",
+      "isHidden": false
+    },
+    "d7de33f969b74babb9262b629829e566": {
+      "id": "d7de33f969b74babb9262b629829e566",
+      "name": "item_type",
+      "label": "Item_type",
+      "defaultValue": "item_type",
+      "varType": "string",
+      "category": "vaInputs",
+      "metadata": {
+        "libraryMappingType": "output"
+      },
+      "preventDisable": false,
+      "nodeId": "6b94a7e30472425093bef0cdcaa200a7",
+      "isHidden": false
+    },
+    "8564c4a36a9d4ac793540dc3d549e10e": {
+      "id": "8564c4a36a9d4ac793540dc3d549e10e",
+      "name": "is_conversational",
+      "label": "Is_conversational",
+      "defaultValue": "is_conversational",
+      "varType": "string",
+      "category": "vaInputs",
+      "metadata": {
+        "libraryMappingType": "output"
+      },
+      "preventDisable": true,
+      "nodeId": "6b94a7e30472425093bef0cdcaa200a7",
+      "isHidden": false
+    },
+    "efc5bf10e37e4e08b708560e140d4dbd": {
+      "id": "efc5bf10e37e4e08b708560e140d4dbd",
+      "value": {
+        "mode": "simple",
+        "value": "false"
+      },
+      "name": "hardware_software_entity_mapped",
+      "label": "hardware_software_entity_mapped",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "17a954a065d847a59fbf7ca547fd5a8e": {
+      "id": "17a954a065d847a59fbf7ca547fd5a8e",
+      "value": {
+        "value": "",
+        "mode": "simple"
+      },
+      "name": "record_table",
+      "label": "record_table",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "cf9485b054634fe98240088b66fef3d3": {
+      "id": "cf9485b054634fe98240088b66fef3d3",
+      "value": {
+        "value": "",
+        "mode": "simple"
+      },
+      "name": "record_id",
+      "label": "record_id",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "c534f922fd9b451c933d63e4b7c6aec2": {
+      "id": "c534f922fd9b451c933d63e4b7c6aec2",
+      "value": {
+        "value": "",
+        "mode": "simple"
+      },
+      "name": "recordLink",
+      "label": "recordLink",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "cf445b5c755e4ed1937342dbcf7a6c9d": {
+      "id": "cf445b5c755e4ed1937342dbcf7a6c9d",
+      "value": {
+        "mode": "simple",
+        "value": ""
+      },
+      "name": "isTaskBasedTable",
+      "label": "isTaskBasedTable",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "9312c09ea9134e3e8495ce2ee7ea86a1": {
+      "id": "9312c09ea9134e3e8495ce2ee7ea86a1",
+      "value": {
+        "mode": "simple",
+        "value": "true"
+      },
+      "name": "image_not_shown",
+      "label": "image_not_shown",
+      "varType": "script",
+      "category": "vaVars"
+    },
+    "9b3d9b2c65594d4995eb857ac0b86696": {
+      "id": "9b3d9b2c65594d4995eb857ac0b86696",
+      "name": "record_id",
+      "label": "Record_id",
+      "defaultValue": "record_id",
+      "varType": "string",
+      "category": "vaInputs",
+      "metadata": {
+        "libraryMappingType": "output"
+      },
+      "preventDisable": true,
+      "nodeId": "5353a1fed5b74ba88ef39fe6bbf41757",
+      "isHidden": false
+    },
+    "dc62fc7b09f64a4281a24a539cffea46": {
+      "id": "dc62fc7b09f64a4281a24a539cffea46",
+      "name": "record_table",
+      "label": "Record_table",
+      "defaultValue": "record_table",
+      "varType": "string",
+      "category": "vaInputs",
+      "metadata": {
+        "libraryMappingType": "output"
+      },
+      "preventDisable": true,
+      "nodeId": "5353a1fed5b74ba88ef39fe6bbf41757",
+      "isHidden": false
+    },
+    "f1e67d9a46ee4e50b654281cd6dfe335": {
+      "id": "f1e67d9a46ee4e50b654281cd6dfe335",
+      "name": "variables",
+      "label": "Variables",
+      "defaultValue": "variables",
+      "varType": "string",
+      "category": "vaInputs",
+      "metadata": {
+        "libraryMappingType": "output"
+      },
+      "preventDisable": false,
+      "nodeId": "5353a1fed5b74ba88ef39fe6bbf41757",
+      "isHidden": false
+    }
+  }
+}</graph>
+        <name>Submit a request</name>
+        <sys_class_name>sys_cb_design_topic</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-02-15 21:44:36</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_id>269c2834c3339210c33b722ed4013118</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>FlowTopic</sys_name>
+        <sys_package display_value="NeedIt" source="x_58872_needit">6ead8e780f603200cd674f8ce1050ed1</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NeedIt">6ead8e780f603200cd674f8ce1050ed1</sys_scope>
+        <sys_update_name>sys_cb_design_topic_269c2834c3339210c33b722ed4013118</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-02-15 21:44:36</sys_updated_on>
+        <type>FlowTopic</type>
+    </sys_cb_design_topic>
+</record_update>
